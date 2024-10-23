@@ -33,31 +33,34 @@ function _:draw()
     end
 end
 
-function _:touchmoved( id, x, y, dx, dy, pressure )
-  if self.current.touchmoved then
-        self.current:touchmoved( id, x, y, dx, dy, pressure )
-  end
+function _:touchmoved(id, x, y, dx, dy, pressure)
+    if self.current.touchmoved then
+        self.current:touchmoved(id, x, y, dx, dy, pressure)
+    end
 end
 
-function _:touchpressed( id, x, y, dx, dy, pressure )
-  if self.current.touchpressed then
-        self.current:touchpressed( id, x, y, dx, dy, pressure )
-  end
+function _:touchpressed(id, x, y, dx, dy, pressure)
+    if self.current.touchpressed then
+        self.current:touchpressed(id, x, y, dx, dy, pressure)
+    end
 end
 
-function _:touchreleased( id, x, y, dx, dy, pressure )
-  if self.current.touchreleased then
-        self.current:touchreleased( id, x, y, dx, dy, pressure )
-  end
+function _:touchreleased(id, x, y, dx, dy, pressure)
+    if self.current.touchreleased then
+        self.current:touchreleased(id, x, y, dx, dy, pressure)
+    end
 end
-function _:mousereleased( x, y, button, istouch, presses)
+
+function _:mousereleased(x, y, button, istouch, presses)
     if self.current.mousereleased then
-        self.current:mousereleased( x, y, button, istouch, presses)
+        self.current:mousereleased(x, y, button, istouch, presses)
     end
 end
-function _:mousemoved( x, y, dx, dy, istouch )
+
+function _:mousemoved(x, y, dx, dy, istouch)
     if self.current.mousemoved then
-        self.current:mousemoved( x, y, dx, dy, istouch )
+        self.current:mousemoved(x, y, dx, dy, istouch)
     end
 end
+
 return _

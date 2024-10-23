@@ -1,4 +1,4 @@
-local _={}
+local _ = {}
 _.Point = Classic:extend()
 
 function _.Point:new(t)

@@ -1,4 +1,5 @@
-local pairs, ipairs, tostring, type, concat, dump, floor, format = pairs, ipairs, tostring, type, table.concat, string.dump, math.floor, string.format
+local pairs, ipairs, tostring, type, concat, dump, floor, format = pairs, ipairs, tostring, type, table.concat,
+		string.dump, math.floor, string.format
 
 local function getchr(c)
 	return "\\" .. c:byte()
@@ -8,7 +9,12 @@ local function make_safe(text)
 	return ("%q"):format(text):gsub('\n', 'n'):gsub("[\128-\255]", getchr)
 end
 
-local oddvals = {[tostring(1/0)] = '1/0', [tostring(-1/0)] = '-1/0', [tostring(-(0/0))] = '-(0/0)', [tostring(0/0)] = '0/0'}
+local oddvals = {
+	[tostring(1 / 0)] = '1/0',
+	[tostring(-1 / 0)] = '-1/0',
+	[tostring(-(0 / 0))] = '-(0/0)',
+	[tostring(0 / 0)] = '0/0'
+}
 local function write(t, memo, rev_memo)
 	local ty = type(t)
 	if ty == 'number' then
@@ -30,15 +36,33 @@ local function write(t, memo, rev_memo)
 	end
 end
 
-local kw = {['and'] = true, ['break'] = true, ['do'] = true, ['else'] = true,
-	['elseif'] = true, ['end'] = true, ['false'] = true, ['for'] = true,
-	['function'] = true, ['goto'] = true, ['if'] = true, ['in'] = true,
-	['local'] = true, ['nil'] = true, ['not'] = true, ['or'] = true,
-	['repeat'] = true, ['return'] = true, ['then'] = true, ['true'] = true,
-	['until'] = true, ['while'] = true}
+local kw = {
+	['and'] = true,
+	['break'] = true,
+	['do'] = true,
+	['else'] = true,
+	['elseif'] = true,
+	['end'] = true,
+	['false'] = true,
+	['for'] = true,
+	['function'] = true,
+	['goto'] = true,
+	['if'] = true,
+	['in'] = true,
+	['local'] = true,
+	['nil'] = true,
+	['not'] = true,
+	['or'] = true,
+	['repeat'] = true,
+	['return'] = true,
+	['then'] = true,
+	['true'] = true,
+	['until'] = true,
+	['while'] = true
+}
 local function write_key_value_pair(k, v, memo, rev_memo, name)
 	if type(k) == 'string' and k:match '^[_%a][_%w]*$' and not kw[k] then
-		return (name and name .. '.' or '') .. k ..'=' .. write(v, memo, rev_memo)
+		return (name and name .. '.' or '') .. k .. '=' .. write(v, memo, rev_memo)
 	else
 		return (name or '') .. '[' .. write(k, memo, rev_memo) .. ']=' .. write(v, memo, rev_memo)
 	end
@@ -62,7 +86,7 @@ local function write_table_ex(t, memo, rev_memo, srefs, name)
 	for i = 1, #t do -- don't use ipairs here, we need the gaps
 		local v = t[i]
 		if v == t or is_cyclic(memo, v, t) then
-			srefs[#srefs + 1] = {name, i, v}
+			srefs[#srefs + 1] = { name, i, v }
 			m[mi] = 'nil'
 			mi = mi + 1
 		else
@@ -70,10 +94,10 @@ local function write_table_ex(t, memo, rev_memo, srefs, name)
 			mi = mi + 1
 		end
 	end
-	for k,v in pairs(t) do
+	for k, v in pairs(t) do
 		if type(k) ~= 'number' or floor(k) ~= k or k < 1 or k > #t then
 			if v == t or k == t or is_cyclic(memo, v, t) or is_cyclic(memo, k, t) then
-				srefs[#srefs + 1] = {name, k, v}
+				srefs[#srefs + 1] = { name, k, v }
 			else
 				m[mi] = write_key_value_pair(k, v, memo, rev_memo)
 				mi = mi + 1
@@ -84,8 +108,8 @@ local function write_table_ex(t, memo, rev_memo, srefs, name)
 end
 
 return function(t)
-	local memo = {[t] = 0}
-	local rev_memo = {[0] = t}
+	local memo = { [t] = 0 }
+	local rev_memo = { [0] = t }
 	local srefs = {}
 	local result = {}
 
@@ -97,7 +121,7 @@ return function(t)
 	end
 
 	-- phase 2: reverse order
-	for i = 1, n*.5 do
+	for i = 1, n * .5 do
 		local j = n - i + 1
 		result[i], result[j] = result[j], result[i]
 	end

@@ -445,16 +445,15 @@ function lovebird.init()
   -- Compile page templates
   for k, page in pairs(lovebird.pages) do
     lovebird.pages[k] = lovebird.template(page, "lovebird, req",
-                                          "pages." .. k)
+      "pages." .. k)
   end
   lovebird.inited = true
 end
 
-
 function lovebird.template(str, params, chunkname)
   params = params and ("," .. params) or ""
   local f = function(x) return string.format(" echo(%q)", x) end
-  str = ("?>"..str.."<?lua"):gsub("%?>(.-)<%?lua", f)
+  str = ("?>" .. str .. "<?lua"):gsub("%?>(.-)<%?lua", f)
   str = "local echo " .. params .. " = ..." .. str
   local fn = assert(lovebird.loadstring(str, chunkname))
   return function(...)
@@ -465,26 +464,22 @@ function lovebird.template(str, params, chunkname)
   end
 end
 
-
 function lovebird.map(t, fn)
   local res = {}
   for k, v in pairs(t) do res[k] = fn(v) end
   return res
 end
 
-
 function lovebird.trace(...)
-  local str = "[lovebird] " .. table.concat(lovebird.map({...}, tostring), " ")
+  local str = "[lovebird] " .. table.concat(lovebird.map({ ... }, tostring), " ")
   print(str)
   if not lovebird.wrapprint then lovebird.print(str) end
 end
 
-
 function lovebird.unescape(str)
-  local f = function(x) return string.char(tonumber("0x"..x)) end
+  local f = function(x) return string.char(tonumber("0x" .. x)) end
   return (str:gsub("%+", " "):gsub("%%(..)", f))
 end
-
 
 function lovebird.parseurl(url)
   local res = {}
@@ -496,7 +491,6 @@ function lovebird.parseurl(url)
   return res
 end
 
-
 local htmlescapemap = {
   ["<"] = "&lt;",
   ["&"] = "&amp;",
@@ -505,9 +499,8 @@ local htmlescapemap = {
 }
 
 function lovebird.htmlescape(str)
-  return ( str:gsub("[<&\"']", htmlescapemap) )
+  return (str:gsub("[<&\"']", htmlescapemap))
 end
-
 
 function lovebird.truncate(str, len)
   if #str <= len then
@@ -515,7 +508,6 @@ function lovebird.truncate(str, len)
   end
   return str:sub(1, len - 3) .. "..."
 end
-
 
 function lovebird.compare(a, b)
   local na, nb = tonumber(a), tonumber(b)
@@ -528,7 +520,6 @@ function lovebird.compare(a, b)
   return tostring(a) < tostring(b)
 end
 
-
 function lovebird.checkwhitelist(addr)
   if lovebird.whitelist == nil then return true end
   for _, a in pairs(lovebird.whitelist) do
@@ -538,12 +529,10 @@ function lovebird.checkwhitelist(addr)
   return false
 end
 
-
 function lovebird.clear()
   lovebird.lines = {}
   lovebird.buffer = ""
 end
-
 
 function lovebird.pushline(line)
   line.time = os.time()
@@ -554,7 +543,6 @@ function lovebird.pushline(line)
   end
   lovebird.recalcbuffer()
 end
-
 
 function lovebird.recalcbuffer()
   local function doline(line)
@@ -574,14 +562,13 @@ function lovebird.recalcbuffer()
       end
       if lovebird.timestamp then
         str = os.date('<span class="timestamp">%H:%M:%S</span> ', line.time) ..
-              str
+            str
       end
     end
     return str
   end
   lovebird.buffer = table.concat(lovebird.map(lovebird.lines, doline), "<br>")
 end
-
 
 function lovebird.print(...)
   local t = {}
@@ -601,14 +588,12 @@ function lovebird.print(...)
   end
 end
 
-
 function lovebird.onerror(err)
   lovebird.pushline({ type = "error", str = err })
   if lovebird.wrapprint then
     lovebird.origprint("[lovebird] ERROR: " .. err)
   end
 end
-
 
 function lovebird.onrequest(req, client)
   local page = req.parsedurl.path
@@ -626,13 +611,12 @@ function lovebird.onrequest(req, client)
       contenttype = "application/json"
     end
     str = "HTTP/1.1 200 OK\r\n" ..
-          "Content-Type: " .. contenttype .. "\r\n" ..
-          "Content-Length: " .. #data .. "\r\n" ..
-          "\r\n" .. data
+        "Content-Type: " .. contenttype .. "\r\n" ..
+        "Content-Length: " .. #data .. "\r\n" ..
+        "\r\n" .. data
   end, lovebird.onerror)
   return str
 end
-
 
 function lovebird.receive(client, pattern)
   while 1 do
@@ -651,7 +635,6 @@ function lovebird.receive(client, pattern)
   end
 end
 
-
 function lovebird.send(client, data)
   local idx = 1
   while idx < #data do
@@ -665,7 +648,6 @@ function lovebird.send(client, data)
     end
   end
 end
-
 
 function lovebird.onconnect(client)
   -- Create request table
@@ -701,7 +683,6 @@ function lovebird.onconnect(client)
   client:close()
 end
 
-
 function lovebird.update()
   if not lovebird.inited then lovebird.init() end
   -- Handle new connections
@@ -732,6 +713,5 @@ function lovebird.update()
     end
   end
 end
-
 
 return lovebird

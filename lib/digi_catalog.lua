@@ -16,8 +16,8 @@ local DigiCatalog = require "lib.digi_catalog"({digis=digis})
 
 local _ = Classic:extend() -- base status and evolutions.
 function _:new(t)
-    local t = t or {}
-    self.digis = t.digis or {}
+  local t = t or {}
+  self.digis = t.digis or {}
 end
 
 function _:addDigi(t)
@@ -37,9 +37,8 @@ function _:addDigi(t)
   d.spirit = t.Spirit or t.spirit or nil
   -- digivolve_to ={["agumon"]={"level >= 4","friendship > 2"}
   d.digivolve_to = t.digivolve_to or {}
-  
+
   self.digis[d.key] = d
-  
 end
 
 function _:addDigis(digis)
@@ -63,11 +62,9 @@ function _:exportDigis(filename, internal)
     else
       print("Error: Unable to open file for writing.")
     end
-
   else
     love.filesystem.write(filename, str)
   end
 end
-
 
 return _
