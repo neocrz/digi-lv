@@ -102,9 +102,6 @@ function _.List:touchpressed(id, x, y, dx, dy, pressure)
 end
 
 function _.List:touchmoved(id, x, y, dx, dy, pressure)
-  if col.Rect({ x = x, y = y }, { x = self.x, y = self.y, w = self.w, h = self.h }) then
-    self:moveRef(dy)
-  end
   for k, obj in pairs(self.objsD) do
     if obj.touchmoved then obj:touchmoved(id, x, y, dx, dy, pressure) end
   end
