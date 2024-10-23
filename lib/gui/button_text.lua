@@ -61,6 +61,7 @@ function _:keypressed(key)
     self.input = self.inactive.text.text
     self.inactive.text.text = self.placeholder.inactive
     self.active.text.text = self.placeholder.active
+    if CONF.mobile then love.keyboard.setTextInput(false) end
   end
 end
 
