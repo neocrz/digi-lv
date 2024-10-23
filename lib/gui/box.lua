@@ -1,9 +1,9 @@
-local _ = {}
+local _    = {}
 local path = (...):match("(.-)[^%.]+$")
 local col  = require(path .. "collision")
 
-_.Box = Classic:extend()
-_.Vbox = _.Box:extend()
+_.Box      = Classic:extend()
+_.Vbox     = _.Box:extend()
 
 function _.Box:new(t)
   local t = t or {}
@@ -116,19 +116,29 @@ function _.List:mousemoved(x, y, dx, dy, istouch)
   end
 end
 
-function _.List:mousepressed( x, y, button, istouch, presses )
+function _.List:mousepressed(x, y, button, istouch, presses)
   if col.Rect({ x = x, y = y }, { x = self.x, y = self.y, w = self.w, h = self.h }) then
     self.mouse_pressed = true
   end
   for k, obj in pairs(self.objsD) do
-    if obj.mousepressed then obj:mousepressed( x, y, button, istouch, presses ) end
+    if obj.mousepressed then obj:mousepressed(x, y, button, istouch, presses) end
   end
 end
 
 function _.List:mousereleased(x, y, button, istouch, presses)
   self.mouse_pressed = false
-  for k, obj in pairs(self.objsD) do
-    if obj.mousereleased then obj:mousereleased(x, y, button, istouch, presses) end
+  if col.Rect({ x = x, y = y }, { x = self.x, y = self.y, w = self.w, h = self.h }) then
+    for k, obj in pairs(self.objsD) do
+      if obj.mousereleased then obj:mousereleased(x, y, button, istouch, presses) end
+    end
+  end
+end
+
+function _.List:touchreleased(id, x, y, dx, dy, pressure)
+  if col.Rect({ x = x, y = y }, { x = self.x, y = self.y, w = self.w, h = self.h }) then
+    for k, obj in pairs(self.objsD) do
+      if obj.touchreleased then obj:touchreleased(id, x, y, dx, dy, pressure) end
+    end
   end
 end
 
@@ -148,10 +158,6 @@ function _.Box:draw()
     love.graphics.rectangle(self.mode, self.x - 1, self.y - 1, self.w + 3, self.h + 3)
   end
 end
-
-
-
-
 
 function _.Box:update(dt)
   for k, obj in pairs(self.objsD) do
@@ -189,9 +195,9 @@ function _.Box:mousemoved(x, y, dx, dy, istouch)
   end
 end
 
-function _.Box:mousepressed( x, y, button, istouch, presses )
+function _.Box:mousepressed(x, y, button, istouch, presses)
   for k, obj in pairs(self.objsD) do
-    if obj.mousepressed then obj:mousepressed( x, y, button, istouch, presses ) end
+    if obj.mousepressed then obj:mousepressed(x, y, button, istouch, presses) end
   end
 end
 

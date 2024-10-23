@@ -25,15 +25,14 @@ function State:enter()
   digi_btns = {}
   selected_digi = nil
   for digiKey, digi in pairs(DigiCatalog.digis) do
-    table.insert(digi_btns,
-      Gui.button.Rect {
+    digi_btns[digi] = Gui.button.Rect {
         inactive = {
           text = { text = digi.name }
         },
         action = {
-          released = function(self) selected_digi = digiKey end
+          released = function(self) selected_digi = digi end
         }
-      })
+      }
   end
 
   local digi_list = Gui.box.List {
@@ -52,6 +51,7 @@ end
 
 function State:update(dt)
   ObjHandler:update(dt)
+  -- if selected_digi then print(selected_digi.name) end
 end
 
 function State:draw()
