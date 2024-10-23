@@ -16,12 +16,25 @@ function State:enter()
       released = function(self) StateManager:switch("mydigis") end;
     };
   }
-  
 
-  menu_dim = {
-    w = GS.width/3,
-    h = GS.height/2
+  evo_tree = Gui.button.Rect{
+    inactive = {
+      text = {
+        text = "EVO TREE"
+      }
+    };
+    action ={
+      released = function(self) StateManager:switch("evo_tree") end;
+    };
   }
+  
+  
+  menu_dim = { w = GS.width/3 }
+  if CONF.mobile then
+    menu_dim.h = GS.height/3
+  else
+    menu_dim.h = GS.height/2
+  end
   menu_box = Gui.box.Vbox{
     x=GS.width/2-menu_dim.w/2, 
     y=GS.height/2-menu_dim.h/2,
@@ -30,7 +43,14 @@ function State:enter()
       h = 10
     },
     objs={
-      my_digis
+      my_digis;
+      evo_tree;
+      Gui.button.Rect{
+        inactive = {text = {text = "QUIT"}; };
+        action = {
+          released = function(self) love.event.quit( exitstatus ) end
+        };
+      };
     }
   }
 

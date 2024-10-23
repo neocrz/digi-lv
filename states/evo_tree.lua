@@ -3,18 +3,6 @@ local State = {}
 
 function State:enter()
   ObjHandler = ObjectHandler()
-  my_digis = Gui.button.Rect{
-    x = 100, y=100, w=200, h=80,
-    inactive = {
-      text = {
-        text = "MAKE DIGI BOXES and GRID"
-      }
-    };
-    action ={
-      released = function(self) end;
-    };
-  }
-  ObjHandler:addObj(my_digis)
 end
 
 function State:update(dt)

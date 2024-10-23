@@ -3,9 +3,7 @@ require "globals"
 require "states"
 
 function love.load()
-  
-  local os = love.system.getOS()
-  if os == "Android" or os == "iOS" then
+  if CONF.mobile then
     local _w, _h = love.window.getDesktopDimensions(  )
     local _s = love.window.getDPIScale() 
     love.window.setFullscreen(true)

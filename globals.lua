@@ -3,10 +3,14 @@ StateManager = require "lib.state_manager"
 ObjectHandler = require "lib.obj_handler"
 Lovebird = require "lib.lovebird"
 Gui = require "lib.gui"
+CONF = {}
 
 GS={}
-local os = love.system.getOS()
-if os == "Android" or os == "iOS" then
+CONF.OS = love.system.getOS()
+
+if CONF.OS == "Android" or CONF.OS == "iOS" then CONF.mobile=true end
+
+if CONF.mobile then
   local _w, _h = love.window.getDesktopDimensions(  )
   local _s = love.window.getDPIScale() 
     GS.height = _w / _s
