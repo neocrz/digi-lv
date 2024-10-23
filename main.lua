@@ -3,6 +3,7 @@ require "globals"
 require "states"
 
 function love.load()
+  ObjHandler = ObjectHandler()
   if CONF.mobile then
     local _w, _h = love.window.getDesktopDimensions(  )
     local _s = love.window.getDPIScale() 
@@ -18,7 +19,7 @@ function love.update(dt)
 end
 function love.draw()
   StateManager:draw()
-  love.graphics.print('Memory actually used (in kB): ' .. collectgarbage('count'), 10,10)
+  love.graphics.print('Memory actually used (in kB): ' .. collectgarbage('count'), 10,30)
 end
 function love.touchmoved( id, x, y, dx, dy, pressure )
   StateManager:touchmoved( id, x, y, dx, dy, pressure )

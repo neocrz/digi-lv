@@ -3,6 +3,18 @@ local State = {}
 
 function State:enter()
   ObjHandler = ObjectHandler()
+  menu = Gui.button.Rect{
+    x = 100, y=100, w=200, h=80,
+    inactive = {
+      text = {
+        text = "MAKE DIGIVOLUTION TREE"
+      }
+    };
+    action ={
+      released = function(self) StateManager:switch("menu") end;
+    };
+  }
+  ObjHandler:addObj(menu)
 end
 
 function State:update(dt)

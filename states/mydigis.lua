@@ -3,7 +3,7 @@ local State = {}
 
 function State:enter()
   ObjHandler = ObjectHandler()
-  my_digis = Gui.button.Rect{
+  menu = Gui.button.Rect{
     x = 100, y=100, w=200, h=80,
     inactive = {
       text = {
@@ -11,10 +11,10 @@ function State:enter()
       }
     };
     action ={
-      released = function(self) end;
+      released = function(self) StateManager:switch("menu") end;
     };
   }
-  ObjHandler:addObj(my_digis)
+  ObjHandler:addObj(menu)
 end
 
 function State:update(dt)

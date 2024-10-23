@@ -149,6 +149,7 @@ function _.Rect:touchmoved(id, x, y, dx, dy, pressure) end
 function _.Rect:touchreleased(id, x, y, dx, dy, pressure)
     if col.Rect({ x = x, y = y }, { x = self.x, y = self.y, w = self.w, h = self.h }) then
         if self.action.released then self.action.released(self) end
+        self.draw = self.draw_state.inactive
     end
 end
 
