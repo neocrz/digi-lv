@@ -69,4 +69,19 @@ function _:mousepressed( x, y, button, istouch, presses )
     end
 end
 
+function _:textinput(t)
+    if self.current.textinput then
+        self.current:textinput(t)
+    end
+end
+
+function _:keypressed(key)
+    if self.current.keypressed then
+        self.current:keypressed(key)
+    end
+end
+
+
+
+
 return _

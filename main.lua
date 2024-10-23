@@ -50,3 +50,11 @@ end
 function love.mousepressed( x, y, button, istouch, presses )
   StateManager:mousepressed( x, y, button, istouch, presses )
 end
+
+function love.textinput(t)
+  StateManager:textinput(t)
+end
+
+function love.keypressed(key)
+  StateManager:keypressed(key)
+end

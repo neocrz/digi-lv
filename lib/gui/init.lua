@@ -6,4 +6,6 @@ _.base     = require(cwd .. "base")
 _.box      = require(cwd .. "box")
 _.button   = require(cwd .. "button")
 _.col      = require(cwd .. "collision")
+_.button.text = require(cwd.."button_text")
+
 return _

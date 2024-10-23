@@ -120,5 +120,22 @@ function OH:mousepressed( x, y, button, istouch, presses )
     end
   end
 end
+function OH:textinput(t)
+  for k_l, layer in pairs(self.layers) do
+    for k_o, obj in pairs(layer.objs) do
+      if obj.textinput then obj:textinput(t) end
+    end
+  end
+end
+
+function OH:keypressed(key)
+  for k_l, layer in pairs(self.layers) do
+    for k_o, obj in pairs(layer.objs) do
+      if obj.keypressed then obj:keypressed(key) end
+    end
+  end
+end
+
+
 
 return OH

@@ -17,11 +17,23 @@ function State:enter()
     },
   }
 
+  search = Gui.button.text {
+    x = (GS.width / 2) - (100 / 2),
+    y = GS.height - 100 - 60,
+    w = 100, h = 40,
+    inactive = {
+      text = {
+        text = "search"
+      }
+    },
+  }
+
   local digis = require "data.d_catalog"
   local DigiCatalog = require("lib.digi_catalog")({ digis = digis })
   digis = nil
-  menu_key = ObjHandler:addObj(menu)
-  menu = nil
+  menu = ObjHandler:addObj(menu) -- return key
+  search = ObjHandler:addObj(search) -- return key
+  
   digi_btns = {}
   selected_digi = nil
   for digiKey, digi in pairs(DigiCatalog.digis) do
@@ -85,5 +97,13 @@ end
 function State:mousepressed( x, y, button, istouch, presses )
   ObjHandler:mousepressed( x, y, button, istouch, presses )
 end
+
+function State:textinput(t)
+  ObjHandler:textinput(t)
+end
+function State:keypressed(key)
+  ObjHandler:keypressed(key)
+end
+
 
 return State

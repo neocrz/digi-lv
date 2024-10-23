@@ -94,4 +94,11 @@ end
 function State:mousepressed( x, y, button, istouch, presses )
   ObjHandler:mousepressed( x, y, button, istouch, presses )
 end
+function State:textinput(t)
+  ObjHandler:textinput(t)
+end
+function State:keypressed(key)
+  ObjHandler:keypressed(key)
+end
+
 return State
