@@ -3,19 +3,46 @@ local State = {}
 
 function State:enter()
   ObjHandler = ObjectHandler()
-  DigiCatalog = require("lib.digi_catalog")()
   menu = Gui.button.Rect{
-    x = 100, y=100, w=200, h=80,
+    x=(GS.width/2)-(100/2),
+    y=GS.height-100, 
+    w=100, h=40,
     inactive = {
       text = {
-        text = "MAKE DIGIVOLUTION TREE"
+        text = "menu"
       }
     };
     action ={
       released = function(self) StateManager:switch("menu") end;
     };
   }
-  ObjHandler:addObj(menu)
+  
+  local digis = require "data.d_catalog"
+  local DigiCatalog = require("lib.digi_catalog")({digis=digis})
+  digis = nil
+  menu_key = ObjHandler:addObj(menu)
+  menu=nil
+  digi_btns = {}
+  for k,v in pairs(DigiCatalog.digis) do
+    table.insert(digi_btns,
+      Gui.button.Rect{
+      inactive={text={text=key}}
+    })
+  end
+  
+  local digi_list = Gui.box.List{
+    mode="line",
+    objs=digi_btns,
+  }
+
+  digi_list.w=GS.width/2
+  digi_list.x=GS.width/2-digi_list.w/2
+  digi_list.h=GS.height/3
+  digi_list.y=GS.height/2-digi_list.h/2
+  digi_list.mode="line"
+  digi_list:setSizes()
+  ObjHandler:addObj(digi_list)
+  
 end
 
 function State:update(dt)

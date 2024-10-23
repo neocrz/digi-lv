@@ -11,6 +11,7 @@ function love.load()
     love.window.setMode(1,2) -- portrait
   end
   love.graphics.setBackgroundColor( 78/255, 120/255, 186/255, 1 )
+  
   StateManager:switch("menu")
 end
 function love.update(dt)

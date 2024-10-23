@@ -9,12 +9,14 @@ function _.Box:new(t)
     self.y = t.y or 0
     self.w = t.w or 0
     self.h = t.h or 0
+    self.mode = t.mode or nil
     t.padding = t.padding or {}
 
     self.padding = {
         h = t.padding.h or 0,
     }
     self.objs = t.objs or {}
+    self.objsD = {}
 end
 
 function _.Vbox:new(t)
@@ -31,7 +33,7 @@ function _.Vbox:setSizes()
 
     self.obj_h = (self.h -(pad_amount * self.padding.h))/objs_amount
 
-    self.objsD = {}
+    
 
     for k,obj in pairs(self.objs) do
         obj.w = self.w
@@ -47,11 +49,33 @@ function _.Vbox:setSizes()
     table.remove(self.objsD)
 end
 
-_.Grid = _.Box:extend()
+_.List = _.Box:extend()
 
-function _.Grid:new(t)
+function _.List:new(t)
     local t = t or {}
-    _.Vbox.super.new(self, t)
+    _.List.super.new(self, t)
+    self.obj_h = t.obj_h or 40
+    self:setSizes()
+end
+
+function _.List:setSizes()
+    local objs_amount = #self.objs
+    local pad_amount  = objs_amount - 1
+    local base_x = self.x
+    local base_y = self.y
+
+    for k,obj in pairs(self.objs) do
+        obj.w = self.w
+        obj.h = self.obj_h
+        obj.x = base_x
+        obj.y = base_y
+        table.insert(self.objsD, obj)
+        obj._vbox_index = k
+        base_y = base_y + obj.h
+        table.insert(self.objsD, {x=base_x, y=base_y, w=self.w, h = self.padding.h})
+        base_y = base_y + self.padding.h
+    end
+    table.remove(self.objsD)
 end
 
 
@@ -61,9 +85,15 @@ function _.Box:rmObj(obj)
 end
 
 function _.Box:draw()
-    for k,obj in pairs(self.objsD) do
-        if obj.draw then obj:draw() end
-    end
+  love.graphics.setScissor(self.x-1,self.y-1,self.w+3,self.h+3)
+  
+  for k,obj in pairs(self.objsD) do
+    if obj.draw then obj:draw() end
+  end
+  love.graphics.setScissor()
+  if self.mode then
+    love.graphics.rectangle(self.mode, self.x-1,self.y-1,self.w+3,self.h+3)
+  end
 end
 
 function _.Box:update(dt)
