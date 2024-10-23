@@ -29,13 +29,16 @@ function State:enter()
   }
   
   
-  menu_dim = { w = GS.width/3 }
+  local menu_dim = {}
   if CONF.mobile then
+    menu_dim.w = GS.width/2
     menu_dim.h = GS.height/3
+    
   else
+    menu_dim.w = GS.width/3 
     menu_dim.h = GS.height/2
   end
-  menu_box = Gui.box.Vbox{
+  local menu_box = Gui.box.Vbox{
     x=GS.width/2-menu_dim.w/2, 
     y=GS.height/2-menu_dim.h/2,
     w=menu_dim.w, h=menu_dim.h,
