@@ -81,6 +81,12 @@ function _:keypressed(key)
     end
 end
 
+function _:wheelmoved(x,y)
+    if self.current.wheelmoved then
+        self.current:wheelmoved(x,y)
+    end
+end
+
 
 
 

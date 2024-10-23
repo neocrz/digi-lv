@@ -11,6 +11,7 @@ function _.Box:new(t)
   self.y = t.y or 0
   self.w = t.w or 0
   self.h = t.h or 0
+  self.mouse_wheel_sen = 3
   self.mode = t.mode or nil
   t.padding = t.padding or {}
 
@@ -19,6 +20,10 @@ function _.Box:new(t)
   }
   self.objs = t.objs or {}
   self.objsD = {}
+end
+
+function _.Box:draw()
+  if self.to_draw then self.to_draw(self) end
 end
 
 function _.Vbox:new(t)
@@ -116,6 +121,13 @@ function _.List:mousemoved(x, y, dx, dy, istouch)
   end
 end
 
+function _.List:wheelmoved(x,y)
+  mx, my = love.mouse.getPosition( )
+  if col.Rect({ x = mx, y = my }, { x = self.x, y = self.y, w = self.w, h = self.h }) then
+    self:moveRef(y*self.mouse_wheel_sen)
+  end
+end
+
 function _.List:mousepressed(x, y, button, istouch, presses)
   if col.Rect({ x = x, y = y }, { x = self.x, y = self.y, w = self.w, h = self.h }) then
     self.mouse_pressed = true
@@ -147,11 +159,11 @@ function _.Box:rmObj(obj)
   self:setSizes()
 end
 
-function _.Box:draw()
+function _.Box:to_draw()
   love.graphics.setScissor(self.x - 1, self.y - 1, self.w + 3, self.h + 3)
 
   for k, obj in pairs(self.objsD) do
-    if obj.draw then obj:draw() end
+    if obj.draw then obj:to_draw() end
   end
   love.graphics.setScissor()
   if self.mode then

@@ -1,5 +1,45 @@
 -- menu_state.lua
 local State = {}
+local DigiCatalog = require("lib.digi_catalog")({ digis = require("data.d_catalog") })
+
+local gen_digi_list = function(search)
+  local search = search or nil
+  local digi_btns = {}
+  local add_dg_btn = function (digi)
+    digi_btns[digi] = Gui.button.Rect {
+      inactive = {
+        text = { text = digi.name }
+      },
+      action = {
+        released = function(self) selected_digi = digi end
+      }
+    }
+  end
+  
+  for digiKey, digi in pairs(DigiCatalog.digis) do
+    if not search then
+      add_dg_btn(digi)
+    else
+      if Utils.searchSubstring(digi.name, search) then
+        add_dg_btn(digi)
+      end
+    end
+  end
+
+  local digi_list = Gui.box.List {
+    mode = "line",
+    objs = digi_btns,
+  }
+
+  digi_list.w = GS.width / 2
+  digi_list.x = GS.width / 2 - digi_list.w / 2
+  digi_list.h = GS.height / 3
+  digi_list.y = GS.height / 2 - digi_list.h / 2
+  digi_list.mode = "line"
+  digi_list:setSizes()
+  digi_list_key = ObjHandler:addObj(digi_list)
+  return digi_list_key
+end
 
 function State:enter()
   ObjHandler = ObjectHandler()
@@ -26,39 +66,20 @@ function State:enter()
         text = "search"
       }
     },
+    action = {
+      input = function (self)
+        ObjHandler:rmObj(digi_list_key)
+        digi_list_key = gen_digi_list(self.input)
+      end
+    }
   }
 
-  local digis = require "data.d_catalog"
-  local DigiCatalog = require("lib.digi_catalog")({ digis = digis })
-  digis = nil
+  
   menu = ObjHandler:addObj(menu) -- return key
   search = ObjHandler:addObj(search) -- return key
-  
-  digi_btns = {}
   selected_digi = nil
-  for digiKey, digi in pairs(DigiCatalog.digis) do
-    digi_btns[digi] = Gui.button.Rect {
-        inactive = {
-          text = { text = digi.name }
-        },
-        action = {
-          released = function(self) selected_digi = digi end
-        }
-      }
-  end
-
-  local digi_list = Gui.box.List {
-    mode = "line",
-    objs = digi_btns,
-  }
-
-  digi_list.w = GS.width / 2
-  digi_list.x = GS.width / 2 - digi_list.w / 2
-  digi_list.h = GS.height / 3
-  digi_list.y = GS.height / 2 - digi_list.h / 2
-  digi_list.mode = "line"
-  digi_list:setSizes()
-  ObjHandler:addObj(digi_list)
+  
+  digi_list_key = gen_digi_list()
 end
 
 function State:update(dt)
@@ -104,6 +125,8 @@ end
 function State:keypressed(key)
   ObjHandler:keypressed(key)
 end
-
+function State:wheelmoved(x,y)
+  ObjHandler:wheelmoved(x,y)
+end
 
 return State

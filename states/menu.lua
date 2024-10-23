@@ -100,5 +100,8 @@ end
 function State:keypressed(key)
   ObjHandler:keypressed(key)
 end
+function State:wheelmoved(x,y)
+  ObjHandler:wheelmoved(x,y)
+end
 
 return State

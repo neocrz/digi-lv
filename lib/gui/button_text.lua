@@ -12,12 +12,21 @@ function _:new(t)
     inactive = self.inactive.text.text,
     active = self.active.text.text,
   }
+  self.def = {}
 
   self.action.released = function (self)
     self.kb_activated = true
     love.keyboard.setTextInput(true)
     self.inactive.text.text = ""
+    self.def.pos = {x=self.x, y=self.y, w=self.w, h=self.h}
+    self.def.draw = self.draw
+    self.x = 20
+    self.y = 40
+    self.w = GS.width - 40
+    CONF.blank = self
   end
+  local _t = t.action or {}
+  self.action.input = _t.input or nil
 end
 
 function _:textinput(t)
@@ -57,12 +66,20 @@ function _:keypressed(key)
     end
   end
   if key == "return" and self.kb_activated then
+    self.x = self.def.pos.x
+    self.y = self.def.pos.y
+    self.w = self.def.pos.w
+    self.def.pos = nil
+    CONF.blank = nil
     self.kb_activated = false
     self.input = self.inactive.text.text
     self.inactive.text.text = self.placeholder.inactive
     self.active.text.text = self.placeholder.active
     if CONF.mobile then love.keyboard.setTextInput(false) end
+    if self.action.input then self.action.input(self) end
   end
 end
+
+
 
 return _

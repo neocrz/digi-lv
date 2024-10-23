@@ -48,14 +48,14 @@ end
 function State:mousemoved(x, y, dx, dy, istouch)
   ObjHandler:mousemoved(x, y, dx, dy, istouch)
 end
-
 function State:mousepressed( x, y, button, istouch, presses )
   ObjHandler:mousepressed( x, y, button, istouch, presses )
 end
-
-
 function State:keypressed(key)
   ObjHandler:keypressed(key)
+end
+function State:wheelmoved(x,y)
+  ObjHandler:wheelmoved(x,y)
 end
 
 return State

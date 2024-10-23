@@ -135,6 +135,13 @@ function OH:keypressed(key)
     end
   end
 end
+function OH:wheelmoved(x,y)
+  for k_l, layer in pairs(self.layers) do
+    for k_o, obj in pairs(layer.objs) do
+      if obj.wheelmoved then obj:wheelmoved(x,y) end
+    end
+  end
+end
 
 
 

@@ -52,7 +52,8 @@ function Button:new(t)
   self.action.out = _t.action.out or nil
 end
 
-function Button:destroy()
+function Button:draw()
+  if self.to_draw then self:to_draw() end
 end
 
 _.Rect = Button:extend()
@@ -105,7 +106,7 @@ function _.Rect:new(t)
     love.graphics.setColor(unpack(self.external_color))
   end
 
-  self.draw = self.draw_state.inactive
+  self.to_draw = self.draw_state.inactive
 end
 
 function _.Rect:update(dt)
@@ -117,20 +118,20 @@ function _.Rect:update(dt)
         local tx, ty = love.touch.getPosition(id)
         if (tx == mouseX and ty == mouseY) then print("test") end
         if col.Rect({ x = tx, y = ty }, { x = self.x, y = self.y, w = self.w, h = self.h }) then
-          self.draw = self.draw_state.active
+          self.to_draw = self.draw_state.active
           if self.action.hover then self.action.hover(self) end
           return
         end
         ::continue_touches::
       end
-      self.draw = self.draw_state.inactive
+      self.to_draw = self.draw_state.inactive
       if self.action.out then self.action.out(self) end
     end
     tch()
   else
     if col.Rect({ x = mouseX, y = mouseY }, { x = self.x, y = self.y, w = self.w, h = self.h }) then
     else
-      self.draw = self.draw_state.inactive
+      self.to_draw = self.draw_state.inactive
       if self.action.out then self.action.out(self) end
     end
   end
@@ -147,7 +148,7 @@ function _.Rect:touchmoved(id, x, y, dx, dy, pressure) end
 function _.Rect:touchreleased(id, x, y, dx, dy, pressure)
   if col.Rect({ x = x, y = y }, { x = self.x, y = self.y, w = self.w, h = self.h }) then
     if self.action.released then self.action.released(self) end
-    self.draw = self.draw_state.inactive
+    self.to_draw = self.draw_state.inactive
   end
 end
 
@@ -162,11 +163,11 @@ function _.Rect:mousemoved(x, y, dx, dy, istouch)
   if istouch then return end
 
   if col.Rect({ x = x, y = y }, { x = self.x, y = self.y, w = self.w, h = self.h }) then
-    self.draw = self.draw_state.active
+    self.to_draw = self.draw_state.active
     if self.action.hover then self.action.hover(self) end
     return
   else
-    self.draw = self.draw_state.inactive
+    self.to_draw = self.draw_state.inactive
     if self.action.out then self.action.out(self) end
   end
 end
