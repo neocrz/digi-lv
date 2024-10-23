@@ -88,7 +88,7 @@ function _.List:touchpressed(id, x, y, dx, dy, pressure)
     self.ref_y = self.ref_y + dy
 
     for k, v in pairs(self.objsD) do
-      v.y = v.y + y
+      v.y = v.y + dy
     end
   end
   for k, obj in pairs(self.objsD) do
@@ -102,7 +102,7 @@ function _.List:touchmoved(id, x, y, dx, dy, pressure)
     self.ref_y = self.ref_y + dy
 
     for k, v in pairs(self.objsD) do
-      v.y = v.y + y
+      v.y = v.y + dy
     end
   end
   for k, obj in pairs(self.objsD) do
