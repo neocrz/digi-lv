@@ -1,4 +1,6 @@
 local _ = {}
+local path = (...):match("(.-)[^%.]+$")
+local col  = require(path .. "collision")
 
 _.Box = Classic:extend()
 _.Vbox = _.Box:extend()
@@ -80,16 +82,31 @@ function _.List:setSizes()
   table.remove(self.objsD)
 end
 
-function _.List:move(dx,dy)
+function _.List:touchpressed(id, x, y, dx, dy, pressure)
+  if col.Rect({ x = x, y = y }, { x = self.x, y = self.y, w = self.w, h = self.h }) then
+    self.ref_x = self.ref_x + dx
+    self.ref_y = self.ref_y + dy
+
+    for k, v in pairs(self.objsD) do
+      v.y = v.y + y
+    end
+  end
   for k, obj in pairs(self.objsD) do
-    obj.y = obj.y + dy
+    if obj.touchpressed then obj:touchpressed(id, x, y, dx, dy, pressure) end
   end
 end
 
-function _.List:touchpressed(id, x, y, dx, dy, pressure)
-  self:move(dx, dy)
+function _.List:touchmoved(id, x, y, dx, dy, pressure)
+  if col.Rect({ x = x, y = y }, { x = self.x, y = self.y, w = self.w, h = self.h }) then
+    self.ref_x = self.ref_x + dx
+    self.ref_y = self.ref_y + dy
+
+    for k, v in pairs(self.objsD) do
+      v.y = v.y + y
+    end
+  end
   for k, obj in pairs(self.objsD) do
-    if obj.touchpressed then obj:touchpressed(id, x, y, dx, dy, pressure) end
+    if obj.touchmoved then obj:touchmoved(id, x, y, dx, dy, pressure) end
   end
 end
 
