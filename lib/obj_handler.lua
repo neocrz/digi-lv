@@ -113,4 +113,12 @@ function OH:mousemoved(x, y, dx, dy, istouch)
   end
 end
 
+function OH:mousepressed( x, y, button, istouch, presses )
+  for k_l, layer in pairs(self.layers) do
+    for k_o, obj in pairs(layer.objs) do
+      if obj.mousepressed then obj:mousepressed( x, y, button, istouch, presses ) end
+    end
+  end
+end
+
 return OH

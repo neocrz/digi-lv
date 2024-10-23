@@ -46,3 +46,7 @@ end
 function love.mousemoved(x, y, dx, dy, istouch)
   StateManager:mousemoved(x, y, dx, dy, istouch)
 end
+
+function love.mousepressed( x, y, button, istouch, presses )
+  StateManager:mousepressed( x, y, button, istouch, presses )
+end

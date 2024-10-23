@@ -63,4 +63,10 @@ function _:mousemoved(x, y, dx, dy, istouch)
     end
 end
 
+function _:mousepressed( x, y, button, istouch, presses )
+    if self.current.mousepressed then
+        self.current:mousepressed( x, y, button, istouch, presses )
+    end
+end
+
 return _

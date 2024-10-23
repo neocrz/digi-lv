@@ -4,7 +4,7 @@ local col  = require(path .. "collision")
 
 
 local default_font = love.graphics.getFont() -- default font
-local default_color = { 0.7, 0.7, 0.7, 1 }
+local default_color = { 1, 1, 1, 1 }
 
 local Button = Classic:extend()
 

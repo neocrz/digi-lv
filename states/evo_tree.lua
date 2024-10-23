@@ -82,4 +82,8 @@ function State:mousemoved(x, y, dx, dy, istouch)
   ObjHandler:mousemoved(x, y, dx, dy, istouch)
 end
 
+function State:mousepressed( x, y, button, istouch, presses )
+  ObjHandler:mousepressed( x, y, button, istouch, presses )
+end
+
 return State

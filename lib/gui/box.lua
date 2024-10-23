@@ -43,12 +43,13 @@ function _.Vbox:setSizes()
     obj.x = base_x
     obj.y = base_y
     table.insert(self.objsD, obj)
-    obj._vbox_index = k
+    obj.box_index = k
     base_y = base_y + obj.h
     table.insert(self.objsD, { x = base_x, y = base_y, w = self.w, h = self.padding.h })
     base_y = base_y + self.padding.h
   end
   table.remove(self.objsD)
+  self.last_objD = #self.objsD
 end
 
 _.List = _.Box:extend()
@@ -74,22 +75,26 @@ function _.List:setSizes()
     obj.x = base_x
     obj.y = base_y
     table.insert(self.objsD, obj)
-    obj._vbox_index = k
+    obj.box_index = k
     base_y = base_y + obj.h
     table.insert(self.objsD, { x = base_x, y = base_y, w = self.w, h = self.padding.h })
     base_y = base_y + self.padding.h
   end
   table.remove(self.objsD)
+  self.last_objD = #self.objsD
+end
+
+function _.List:moveRef(dy)
+  self.ref_y = self.ref_y + dy
+
+  for k, v in pairs(self.objsD) do
+    v.y = v.y + dy
+  end
 end
 
 function _.List:touchpressed(id, x, y, dx, dy, pressure)
   if col.Rect({ x = x, y = y }, { x = self.x, y = self.y, w = self.w, h = self.h }) then
-    self.ref_x = self.ref_x + dx
-    self.ref_y = self.ref_y + dy
-
-    for k, v in pairs(self.objsD) do
-      v.y = v.y + dy
-    end
+    self:moveRef(dy)
   end
   for k, obj in pairs(self.objsD) do
     if obj.touchpressed then obj:touchpressed(id, x, y, dx, dy, pressure) end
@@ -98,21 +103,40 @@ end
 
 function _.List:touchmoved(id, x, y, dx, dy, pressure)
   if col.Rect({ x = x, y = y }, { x = self.x, y = self.y, w = self.w, h = self.h }) then
-    self.ref_x = self.ref_x + dx
-    self.ref_y = self.ref_y + dy
-
-    for k, v in pairs(self.objsD) do
-      v.y = v.y + dy
-    end
+    self.moveRef(dy)
   end
   for k, obj in pairs(self.objsD) do
     if obj.touchmoved then obj:touchmoved(id, x, y, dx, dy, pressure) end
   end
 end
 
+function _.List:mousemoved(x, y, dx, dy, istouch)
+  if self.mouse_pressed then
+    self:moveRef(dy)
+  end
+  for k, obj in pairs(self.objsD) do
+    if obj.mousemoved then obj:mousemoved(x, y, dx, dy, istouch) end
+  end
+end
+
+function _.List:mousepressed( x, y, button, istouch, presses )
+  if col.Rect({ x = x, y = y }, { x = self.x, y = self.y, w = self.w, h = self.h }) then
+    self.mouse_pressed = true
+  end
+  for k, obj in pairs(self.objsD) do
+    if obj.mousepressed then obj:mousepressed( x, y, button, istouch, presses ) end
+  end
+end
+
+function _.List:mousereleased(x, y, button, istouch, presses)
+  self.mouse_pressed = false
+  for k, obj in pairs(self.objsD) do
+    if obj.mousereleased then obj:mousereleased(x, y, button, istouch, presses) end
+  end
+end
 
 function _.Box:rmObj(obj)
-  table.remove(self.objs, obj._vbox_index)
+  table.remove(self.objs, obj.box_index)
   self:setSizes()
 end
 
@@ -165,6 +189,12 @@ end
 function _.Box:mousemoved(x, y, dx, dy, istouch)
   for k, obj in pairs(self.objsD) do
     if obj.mousemoved then obj:mousemoved(x, y, dx, dy, istouch) end
+  end
+end
+
+function _.Box:mousepressed( x, y, button, istouch, presses )
+  for k, obj in pairs(self.objsD) do
+    if obj.mousepressed then obj:mousepressed( x, y, button, istouch, presses ) end
   end
 end
 
