@@ -1,7 +1,9 @@
 local OH = Classic:extend()
 function OH:new()
   self.layers = {}
-  self.layers[-1] = { count = 0, actual_key = 0, objs = {} }
+  self.default_layer = 2
+  self.layers[1] = { count = 0, actual_key = 0, objs = {} }
+  self.layers[self.default_layer] = { count = 0, actual_key = 0, objs = {} }
 end
 
 function OH:addLayer(n)
@@ -27,7 +29,7 @@ function OH:clearLayer(n)
 end
 
 function OH:addObj(obj, layerName)
-  local layerName = layerName or -1
+  local layerName = layerName or self.default_layer
   local key = 0
   if layerName and self.layers[layerName] then
     -- incremento de elemento
@@ -43,7 +45,7 @@ function OH:addObj(obj, layerName)
 end
 
 function OH:rmObj(key, layerName)
-  local layerName = layerName or -1
+  local layerName = layerName or self.default_layer
   if layerName and self.layers[layerName] then
     if self.layers[layerName]["objs"][key] then
       -- remove

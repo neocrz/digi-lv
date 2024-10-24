@@ -7,6 +7,7 @@ function _:new(t)
   local t = t or {}
   _.super.new(self, t)
   self.input = ""
+  self.keep_input = t.keep_input or false
   self.kb_activated = false
   self.placeholder = {
     inactive = self.inactive.text.text,
@@ -73,8 +74,11 @@ function _:keypressed(key)
     CONF.blank = nil
     self.kb_activated = false
     self.input = self.inactive.text.text
-    self.inactive.text.text = self.placeholder.inactive
+    if not self.keep_input then
+      self.inactive.text.text = self.placeholder.inactive
     self.active.text.text = self.placeholder.active
+    end
+    
     if CONF.mobile then love.keyboard.setTextInput(false) end
     if self.action.input then self.action.input(self) end
   end
