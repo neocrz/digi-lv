@@ -1,8 +1,13 @@
 -- menu_state.lua
 local State = {}
 local DigiCatalog = require("lib.digi_catalog")({ digis = require("data.d_catalog") })
+local ObjHandler = ObjectHandler()
+
 
 local gen_digi_list = function(search)
+  if digi_list then
+    ObjHandler:rmObj(digi_list)
+  end
   local search = search or nil
   local digi_btns = {}
   local add_dg_btn = function (digi)
@@ -26,7 +31,7 @@ local gen_digi_list = function(search)
     end
   end
 
-  local digi_list = Gui.box.List {
+ digi_list = Gui.box.List {
     mode = "line",
     objs = digi_btns,
   }
@@ -37,12 +42,12 @@ local gen_digi_list = function(search)
   digi_list.y = GS.height / 2 - digi_list.h / 2
   digi_list.mode = "line"
   digi_list:setSizes()
-  digi_list_key = ObjHandler:addObj(digi_list)
-  return digi_list_key
+  ObjHandler:addObj(digi_list)
+  
 end
 
 function State:enter()
-  ObjHandler = ObjectHandler()
+  local digi_list = nil
   menu = Gui.button.Rect {
     x = (GS.width / 2) - (100 / 2),
     y = GS.height - 100,
@@ -57,7 +62,9 @@ function State:enter()
     },
   }
 
+gen_digi_list()
   search = Gui.button.text {
+    OH_ref = ObjHandler,
     x = (GS.width / 2) - (100 / 2),
     y = GS.height - 100 - 60,
     w = 100, h = 40,
@@ -68,18 +75,19 @@ function State:enter()
     },
     action = {
       input = function (self)
-        ObjHandler:rmObj(digi_list_key)
-        digi_list_key = gen_digi_list(self.input)
+        
+        
+        gen_digi_list(self.input)
+        self.input = ""
       end
     }
   }
 
   
-  menu = ObjHandler:addObj(menu) -- return key
-  search = ObjHandler:addObj(search) -- return key
+  ObjHandler:addObj(menu) -- return key
+  ObjHandler:addObj(search) -- return key
   selected_digi = nil
   
-  digi_list_key = gen_digi_list()
 end
 
 function State:update(dt)

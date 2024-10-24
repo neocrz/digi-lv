@@ -25,14 +25,6 @@ function love.draw()
   StateManager:draw()
   love.graphics.print('Memory actually used (in kB): ' .. collectgarbage('count'), 10, 30)
   love.graphics.print('FPS: ' .. FPS, 10, 40)
-
-  -- used in text button to make the input clear in mobile
-  if CONF.blank then 
-    love.graphics.setColor(0,0,0,0.75)
-    love.graphics.rectangle("fill",0,0,GS.width,GS.height)
-    love.graphics.setColor(1,1,1,1)
-    CONF.blank:draw()
-  end
 end
 
 function love.touchmoved(id, x, y, dx, dy, pressure)

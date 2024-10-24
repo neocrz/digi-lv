@@ -8,6 +8,7 @@ function _:new(t)
   _.super.new(self, t)
   self.input = ""
   self.keep_input = t.keep_input or false
+  self.OH_ref = t.OH_ref or nil
   self.kb_activated = false
   self.placeholder = {
     inactive = self.inactive.text.text,
@@ -20,14 +21,27 @@ function _:new(t)
     love.keyboard.setTextInput(true)
     self.inactive.text.text = ""
     self.def.pos = {x=self.x, y=self.y, w=self.w, h=self.h}
-    self.def.draw = self.draw
+    self.def.draw = self.to_draw
+    self.draw = self.focus_draw
+    if self.OH_ref then 
+      self.OH_ref:mvObj(self,10)
+    end
     self.x = 20
     self.y = 40
     self.w = GS.width - 40
-    CONF.blank = self
+    --CONF.blank = self
   end
   local _t = t.action or {}
   self.action.input = _t.input or nil
+end
+
+function _:focus_draw()
+  
+  love.graphics.setColor(0,0,0,0.75)
+  love.graphics.rectangle("fill",0,0,GS.width,GS.height)
+  love.graphics.setColor(1,1,1,1)
+  self:to_draw()
+  
 end
 
 function _:textinput(t)
@@ -67,11 +81,15 @@ function _:keypressed(key)
     end
   end
   if key == "return" and self.kb_activated then
+    if self.OH_ref then 
+    self.OH_ref:mvObj(self)
+    end
     self.x = self.def.pos.x
     self.y = self.def.pos.y
     self.w = self.def.pos.w
     self.def.pos = nil
-    CONF.blank = nil
+    self.def.draw = self.to_draw
+    self.draw = self.to_draw
     self.kb_activated = false
     self.input = self.inactive.text.text
     if not self.keep_input then

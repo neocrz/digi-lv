@@ -2,31 +2,26 @@
 local State = {}
 local MyDigis = require("lib.mydigis")()
 
-local function callDigi (box, line, row)
-  local digi, txt = MyDigis:getDigi(box,line,row)
-  if not digi then 
-    popup = Gui.Popup{
-      x = (GS.width/2) - (300/2),
-      y = 50,
-      w = 300,
-      h = 40,
-      text = txt,
-      action = function (self)
-        ObjHandler:rmObj(self.handler_id)
-      end
-    }
 
-    popup.handler_id = ObjHandler:addObj(popup)
-    return false
-  end
-end
 
 function State:enter()
   ObjHandler = ObjectHandler()
-  box_id = nil
-  line_id = nil
-  row_id = nil
-  selected_digi = nil
+  
+  local popup = Gui.Popup{
+    x = (GS.width/2) - (300/2),
+    y = 100,
+    w = 300,
+    h = 40,
+    OH_ref = ObjHandler,
+    
+  }
+  local getDigi = function(box,line,row)
+    local digi, txt = MyDigis:getDigi(box,line,row)
+    if not digi then
+      popup.text = txt
+      ObjHandler:addObj(popup,11)
+    end
+end
   
   menu = Gui.button.Rect {
     x = (GS.width / 2) - (100 / 2),
@@ -43,9 +38,9 @@ function State:enter()
   }
 
   box = Gui.button.text {
-    x = (GS.width / 2) - (100*4 +20*3)/2,
+    x = (GS.width / 2) - (80*4 +20*3)/2,
     y = GS.height - 100 - 60,
-    w = 100, h = 40,
+    w = 80, h = 40,
     inactive = {
       text = {
         text = "BOX"
@@ -54,9 +49,9 @@ function State:enter()
     keep_input=true
   }
   line = Gui.button.text {
-    x = (GS.width / 2) - (100*4 +20*3)/2 + (100+20),
+    x = (GS.width / 2) - (80*4 +20*3)/2 + (80+20),
     y = GS.height - 100 - 60,
-    w = 100, h = 40,
+    w = 80, h = 40,
     inactive = {
       text = {
         text = "LINE"
@@ -65,9 +60,9 @@ function State:enter()
     keep_input=true
   }
   row = Gui.button.text {
-    x = (GS.width / 2) - (100*4 +20*3)/2 + (100+20)*2,
+    x = (GS.width / 2) - (80*4 +20*3)/2 + (80+20)*2,
     y = GS.height - 100 - 60,
-    w = 100, h = 40,
+    w = 80, h = 40,
     inactive = {
       text = {
         text = "ROW"
@@ -76,9 +71,9 @@ function State:enter()
     keep_input=true
   }
   search = Gui.button.Rect {
-    x = (GS.width / 2) - (100*4 +20*3)/2 + (100+20)*3,
+    x = (GS.width / 2) - (80*4 +20*3)/2 + (80+20)*3,
     y = GS.height - 100 - 60,
-    w = 100, h = 40,
+    w = 80, h = 40,
     inactive = {
       text = {
         text = "SEARCH"
@@ -87,21 +82,16 @@ function State:enter()
     keep_input=true
   }
   
-  box.action.input = function(self) box_id = self.input end
-  line.action.input = function(self) line_id = self.input end
-  row.action.input = function(self) row_id = self.input end
   search.action.released = function(self) 
-    callDigi(box_id, line_id, row_id) 
+    getDigi(box.input, line.input, row.input)
   end
 
   
-  menu.handler_id = ObjHandler:addObj(menu) -- return key
-  box.handler_id = ObjHandler:addObj(box) -- return key
-  line.handler_id = ObjHandler:addObj(line) -- return key
-  row.handler_id = ObjHandler:addObj(row) -- return key
-  search.handler_id = ObjHandler:addObj(search) -- return key
-
-  
+  ObjHandler:addObj(menu) -- return key
+  ObjHandler:addObj(box) -- return key
+  ObjHandler:addObj(line) -- return key
+  ObjHandler:addObj(row) -- return key
+  ObjHandler:addObj(search) -- return key
 
 end
 

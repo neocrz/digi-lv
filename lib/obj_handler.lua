@@ -2,14 +2,14 @@ local OH = Classic:extend()
 function OH:new()
   self.layers = {}
   self.default_layer = 2
-  self.layers[1] = { count = 0, actual_key = 0, objs = {} }
-  self.layers[self.default_layer] = { count = 0, actual_key = 0, objs = {} }
+  self.layers[1] = { count = 0, objs = {} }
+  self.layers[self.default_layer] = { count = 0, objs = {} }
 end
 
 function OH:addLayer(n)
   local name = n or nil
   if name then
-    self.layers[name] = { count = 0, actual_key = 0, objs = {} }
+    self.layers[name] = { count = 0, objs = {} }
   end
 end
 
@@ -24,39 +24,48 @@ function OH:clearLayer(n)
   local name = n or nil
   if name and self.layers[name] then
     self.layers[name] = nil
-    self.layers[name] = { count = 0, actual_key = 0, objs = {} }
+    self.layers[name] = { count = 0, objs = {} }
   end
 end
 
-function OH:addObj(obj, layerName)
-  local layerName = layerName or self.default_layer
-  local key = 0
-  if layerName and self.layers[layerName] then
-    -- incremento de elemento
-    key = self.layers[layerName].actual_key + 1
-    -- salvando q quantidade
-    self.layers[layerName].actual_key = key
-    -- adicionando o novo elemento no index
-    self.layers[layerName]["objs"][key] = obj
-
-    self.layers[layerName].count = self.layers[layerName].count + 1
+function OH:addObj(obj, layer)
+  local layer = layer or self.default_layer
+  
+  if not self.layers[layer] then
+    self:addLayer(layer)
   end
-  return key
+  self.layers[layer]["objs"][obj] = obj
+  self.layers[layer].count = self.layers[layer].count + 1
+  obj._OH_layer = layer
 end
 
-function OH:rmObj(key, layerName)
-  local layerName = layerName or self.default_layer
-  if layerName and self.layers[layerName] then
-    if self.layers[layerName]["objs"][key] then
-      -- remove
-      self.layers[layerName]["objs"][key] = nil
-      -- diminui o count
-      self.layers[layerName].count = self.layers[layerName].count - 1
-    else
-      return false
-    end
+function OH:rmObj(obj)
+  local layer = obj._OH_layer or self.default_layer
+  
+  if self.layers[layer] then
+    self.layers[layer]["objs"][obj] = nil
+    self.layers[layer].count = self.layers[layer].count - 1
   end
+  
+  obj._OH_layer = nil
   return true
+end
+
+function OH:mvObj(obj, newLayer)
+  if not self:objExist(obj) then
+    return false
+  end
+  local newLayer = newLayer or self.default_layer
+  self:rmObj(obj)
+  self:addObj(obj,newLayer)
+end
+
+function OH:objExist(obj)
+  local layer = obj._OH_layer or self.default_layer
+  if self.layers[layer]["objs"][obj] then
+    return true
+  end
+  return false
 end
 
 function OH:update(dt)

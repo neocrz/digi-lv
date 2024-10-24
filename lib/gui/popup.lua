@@ -8,7 +8,11 @@ function _:new(t)
     self.y = t.y or 0
     self.w = t.w or 0
     self.h = t.h or 0
-    self.action = t.action or nil
+    self.OH_ref = t.OH_ref or nil
+    
+    self.action = t.action or function(self)
+      self.OH_ref:rmObj(self)
+    end
 end
 
 function _:draw()
@@ -32,8 +36,6 @@ end
 function _:mousepressed(...)
     if self.action then self.action(self) end
 end
-
-
 function _:keypressed(...)
     if self.action then self.action(self) end
 end
