@@ -2,10 +2,20 @@
 local State = {}
 local MyDigis = require("lib.mydigis")()
 
+local DigiTable = Gui.base.Rect:extend()
+
+function DigiTable:new(t)
+  local t = t or {}
+  DigiTable.super.new(self, t)
+  self.digi = t.digi or {
+    key=nil, name=nil, stage=nil
+  }
+end
 
 
 function State:enter()
   ObjHandler = ObjectHandler()
+  local digi = nil
   
   local popup = Gui.Popup{
     x = (GS.width/2) - (300/2),
@@ -16,17 +26,80 @@ function State:enter()
     
   }
   local getDigi = function(box,line,row)
-    local digi, txt = MyDigis:getDigi(box,line,row)
-    if not digi then
+    local dg, txt = MyDigis:getDigi(box,line,row)
+    if not dg then
       popup.text = txt
       ObjHandler:addObj(popup,11)
+      return false
     end
+    return dg
 end
   
-  menu = Gui.button.Rect {
-    x = (GS.width / 2) - (100 / 2),
+  btn_add_dg = Gui.button.Rect {
+    x = (GS.width / 2) - (80*4 +20*3)/2,
     y = GS.height - 100,
-    w = 100, h = 40,
+    w = 80, h = 40,
+    inactive = {
+      text = {
+        text = "ADD"
+      }
+    },
+    action = {
+      released = function(self)
+        
+      end,
+    },
+  }
+
+  btn_mod_dg = Gui.button.Rect {
+    x = (GS.width / 2) - (80*4 +20*3)/2+(80+20),
+    y = GS.height - 100,
+    w = 80, h = 40,
+    inactive = {
+      text = {
+        text = "MODIFY"
+      }
+    },
+    action = {
+      released = function(self) 
+        if digi then
+          StateManager:switch("menu")
+        end
+      end,
+    },
+  }
+  btn_rm_dg = Gui.button.Rect {
+    x = (GS.width / 2) - (80*4 +20*3)/2+(80+20)*2,
+    y = GS.height - 100,
+    w = 80, h = 40,
+    inactive = {
+      text = {
+        text = "REMOVE"
+      }
+    },
+    action = {
+      released = function(self) 
+        local result, txt = MyDigis:rmDigi(btn_box.input, btn_line.input, btn_row.input) 
+        if not result then
+          ObjHandler:addObj(
+            Gui.Popup{
+              x = (GS.width/2) - (300/2),
+              y = 100,
+              w = 300,
+              h = 40,
+              OH_ref = ObjHandler,
+              text=txt,
+              
+            }
+          ,10)
+        end
+      end,
+    },
+  }
+  btn_menu = Gui.button.Rect {
+    x = (GS.width / 2) - (80*4 +20*3)/2+(80+20)*3,
+    y = GS.height - 100,
+    w = 80, h = 40,
     inactive = {
       text = {
         text = "MENU"
@@ -36,8 +109,7 @@ end
       released = function(self) StateManager:switch("menu") end,
     },
   }
-
-  box = Gui.button.text {
+  btn_box = Gui.button.text {
     x = (GS.width / 2) - (80*4 +20*3)/2,
     y = GS.height - 100 - 60,
     w = 80, h = 40,
@@ -48,7 +120,8 @@ end
     },
     keep_input=true
   }
-  line = Gui.button.text {
+
+  btn_line = Gui.button.text {
     x = (GS.width / 2) - (80*4 +20*3)/2 + (80+20),
     y = GS.height - 100 - 60,
     w = 80, h = 40,
@@ -59,7 +132,7 @@ end
     },
     keep_input=true
   }
-  row = Gui.button.text {
+  btn_row = Gui.button.text {
     x = (GS.width / 2) - (80*4 +20*3)/2 + (80+20)*2,
     y = GS.height - 100 - 60,
     w = 80, h = 40,
@@ -70,7 +143,7 @@ end
     },
     keep_input=true
   }
-  search = Gui.button.Rect {
+  btn_search = Gui.button.Rect {
     x = (GS.width / 2) - (80*4 +20*3)/2 + (80+20)*3,
     y = GS.height - 100 - 60,
     w = 80, h = 40,
@@ -82,17 +155,22 @@ end
     keep_input=true
   }
   
-  search.action.released = function(self) 
-    getDigi(box.input, line.input, row.input)
+  btn_search.action.released = function(self) 
+    digi = getDigi(btn_box.input, btn_line.input, btn_row.input)
   end
 
   
-  ObjHandler:addObj(menu) -- return key
-  ObjHandler:addObj(box) -- return key
-  ObjHandler:addObj(line) -- return key
-  ObjHandler:addObj(row) -- return key
-  ObjHandler:addObj(search) -- return key
-
+  
+  ObjHandler:addObj(btn_box)
+  ObjHandler:addObj(btn_line)
+  ObjHandler:addObj(btn_row)
+  ObjHandler:addObj(btn_search)
+  ObjHandler:addObj(btn_add_dg)
+  ObjHandler:addObj(btn_rm_dg)
+  ObjHandler:addObj(btn_mod_dg)
+  ObjHandler:addObj(btn_menu)
+  local dg_table = DigiTable()
+  ObjHandler:addObj(dg_table)
 end
 
 function State:update(dt)
@@ -140,5 +218,11 @@ end
 function State:wheelmoved(x,y)
   ObjHandler:wheelmoved(x,y)
 end
+
+
+
+
+
+
 
 return State

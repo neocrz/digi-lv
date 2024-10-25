@@ -56,10 +56,28 @@ function _:getDigi(box, line, row)
 
   digi = self.boxes[box][line][row]
   if digi then
-    return digi, "sucess"
+    return digi, "success"
   else
     return false, "No digi in this position"
   end
+end
+
+function _:rmDigi(box, line, row)
+  local box = tonumber(box)
+  local line = tonumber(line)
+  local row = tonumber(row)
+  if not (box and line and row) then
+    return false, "Indexes are not valid numbers"
+  end
+  if (box > 13) or (box < 1) 
+  or (line > 6) or (line < 1)
+  or (row >10) or (row < 1)
+  then
+    return false, "Invalid indexes"
+  end
+
+  self.boxes[box][line][row] = nil
+  return true, "success"
 end
 
 return _
