@@ -6,6 +6,7 @@ Gui = require "lib.gui"
 Ser = require "lib.ser"
 Utils = require "lib.utils"
 CONF = {}
+DigiCatalog = require("lib.digi_catalog")({ digis = require("data.d_catalog") })
 
 GS={}
 CONF.OS = love.system.getOS()

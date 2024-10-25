@@ -1,6 +1,5 @@
 -- menu_state.lua
 local State = {}
-local DigiCatalog = require("lib.digi_catalog")({ digis = require("data.d_catalog") })
 local ObjHandler = ObjectHandler()
 
 
@@ -8,8 +7,10 @@ local gen_digi_list = function(search)
   if digi_list then
     ObjHandler:rmObj(digi_list)
   end
+  -- search term
   local search = search or nil
   local digi_btns = {}
+  
   local add_dg_btn = function (digi)
     digi_btns[digi] = Gui.button.Rect {
       inactive = {

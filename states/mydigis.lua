@@ -46,7 +46,22 @@ end
     },
     action = {
       released = function(self)
+        local box = tonumber(btn_box.input)
+        local line = tonumber(btn_line.input)
+        local row = tonumber(btn_row.input)
+        if not (box and line and row) then
+          popup.text = "Indexes are not valid numbers"
+          return ObjHandler:addObj(popup, 10)
+        end
+        if (box > 13) or (box < 1) 
+        or (line > 6) or (line < 1)
+        or (row >10) or (row < 1)
+        then
+          popup.text = "Invalid indexes"
+          return ObjHandler:addObj(popup, 10)
+        end
         
+        StateManager:switch("digi_editor", {box=box, line=line, row=row})
       end,
     },
   }
@@ -62,9 +77,12 @@ end
     },
     action = {
       released = function(self) 
-        if digi then
-          StateManager:switch("menu")
+        local result, txt = MyDigis:getDigi(btn_box.input, btn_line.input, btn_row.input) 
+        if not result then
+          popup.text = txt
+          return ObjHandler:addObj(popup,10)
         end
+        StateManager:switch("digi_editor", {box=btn_box.input, line=btn_line.input, row=btn_row.input})
       end,
     },
   }
@@ -81,17 +99,8 @@ end
       released = function(self) 
         local result, txt = MyDigis:rmDigi(btn_box.input, btn_line.input, btn_row.input) 
         if not result then
-          ObjHandler:addObj(
-            Gui.Popup{
-              x = (GS.width/2) - (300/2),
-              y = 100,
-              w = 300,
-              h = 40,
-              OH_ref = ObjHandler,
-              text=txt,
-              
-            }
-          ,10)
+          popup.text = txt
+          ObjHandler:addObj(popup,10)
         end
       end,
     },

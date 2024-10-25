@@ -6,7 +6,7 @@ local utf8 = require("utf8")
 function _:new(t)
   local t = t or {}
   _.super.new(self, t)
-  self.input = ""
+  self.input = t.input or ""
   self.keep_input = t.keep_input or false
   self.OH_ref = t.OH_ref or nil
   self.kb_activated = false
