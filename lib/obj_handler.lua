@@ -21,7 +21,7 @@ function OH:rmLayer(n)
 end
 
 function OH:clearLayer(n)
-  local name = n or nil
+  local name = n or self.default_layer
   if name and self.layers[name] then
     self.layers[name] = nil
     self.layers[name] = { count = 0, objs = {} }

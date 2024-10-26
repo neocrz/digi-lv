@@ -2,6 +2,10 @@ local _ = Classic:extend() -- new: generate rows and lines
 
 function _:new(boxes)
   self.boxes = boxes or nil
+  if not self.boxes then
+    local saved_boxes, _l = love.filesystem.load("digi_boxes.lua")()
+    self.boxes = saved_boxes
+  end
   self.selected = nil
   if not self.boxes then
     self.boxes = {}
@@ -9,9 +13,17 @@ function _:new(boxes)
       table.insert(self.boxes, i, {})
       for j = 1, 6 do
         table.insert(self.boxes[i], j, {})
+        for k = 1, 10 do
+          table.insert(self.boxes[i][j], k, {})
+        end
       end
     end
   end
+end
+
+function _:saveBoxes()
+  str = Ser(self.boxes)
+  love.filesystem.write("digi_boxes.lua", str)
 end
 
 function _:addDigi(box, line, row, digi)
@@ -21,23 +33,18 @@ function _:addDigi(box, line, row, digi)
   local t = digi or {}
   local d = {}
   d.key = t.key
-  d.name = t.name or nil
   d.level = t.level or nil
-  d.stage = t.stage or nil
-  d.species = t.Species or nil
-  d.attribute = t.attribute or nil
-  d.element = t.element or nil
+  
   d.hp =  t.hp or nil
   d.attack = t.attack or nil
   d["sp.attack"] = t["sp.attack"] or nil
   d.defense = t.defense or nil
   d["sp.defense"] = t["sp.defense"] or nil
-  d.spirit = t.spirit or nil
-  d.box = box
-  d.line = line
-  d.row = row
-
-  self.boxes[line][row] = d
+  -- d.box = box
+  -- d.line = line
+  -- d.row = row
+  self.boxes[box][line][row] = d
+  self:saveBoxes()
 end
 
 function _:getDigi(box, line, row)
@@ -53,9 +60,10 @@ function _:getDigi(box, line, row)
   then
     return false, "Invalid indexes"
   end
-
+  
   digi = self.boxes[box][line][row]
-  if digi then
+  
+  if digi and digi.key then
     return digi, "success"
   else
     return false, "No digi in this position"
@@ -77,6 +85,7 @@ function _:rmDigi(box, line, row)
   end
 
   self.boxes[box][line][row] = nil
+  self:saveBoxes()
   return true, "success"
 end
 

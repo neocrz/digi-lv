@@ -67,4 +67,8 @@ function _:exportDigis(filename, internal)
   end
 end
 
+function _:getDigi(key)
+  return self.digis[key]
+end
+
 return _

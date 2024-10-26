@@ -2,7 +2,7 @@
 local State = {}
 local ObjHandler = ObjectHandler()
 -- to save the digis
-local MyDigis = require("lib.mydigis")()
+
 -- to print alerts and info
 local popup = Gui.Popup{
   x = (GS.width/2) - (300/2),
@@ -251,6 +251,39 @@ function steps.status()
     },
     keep_input=true
   }
+  btn_add = Gui.button.Rect {
+    x = (GS.width / 2) - (100*3+20*2)/2 + (100+20)*2,
+    y = GS.height - 100,
+    w = 100, h = 40,
+    inactive = {
+      text = {
+        text = "ADD"
+      }
+    },
+    action = {
+      released = function(self)
+        digi_info.hp = btn_hp.input
+        digi_info.level = btn_lvl.input
+        digi_info.attack = btn_at.input
+        digi_info["sp.attack"] = btn_sp_at.input
+        digi_info.defense = btn_de.input
+        digi_info["sp.defense"] = btn_sp_de.input
+        MyDigis:addDigi(
+          digi_loc.box, 
+          digi_loc.line, 
+          digi_loc.row,
+          digi_info
+        )
+        popup.text = "Digimon Added"
+        popup.action = function (self)
+          self.OH_ref:clearLayer()
+          self.OH_ref:rmObj(self)
+          StateManager:switch("menu")
+        end
+        ObjHandler:addObj(popup, 10)
+      end,
+    },
+  }
 
   ObjHandler:addObj(txt_key)
   ObjHandler:addObj(txt_hp)
@@ -265,6 +298,7 @@ function steps.status()
   ObjHandler:addObj(btn_de)
   ObjHandler:addObj(txt_sp_de)
   ObjHandler:addObj(btn_sp_de)
+  ObjHandler:addObj(btn_add)
 
   
 end
@@ -275,6 +309,7 @@ function State:enter(t)
   digi_loc.box = tonumber(t.box)
   digi_loc.line = tonumber(t.line)
   digi_loc.row = tonumber(t.row)
+  
   digi_info = t.digi or {}
 
   btn_menu = Gui.button.Rect {
@@ -287,7 +322,10 @@ function State:enter(t)
       }
     },
     action = {
-      released = function(self) StateManager:switch("menu") end,
+      released = function(self) 
+        ObjHandler:clearLayer()
+        StateManager:switch("menu") 
+      end,
     },
   }
   ObjHandler:addObj(btn_menu)

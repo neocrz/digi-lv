@@ -1,7 +1,8 @@
 -- menu_state.lua
 local State = {}
-local MyDigis = require("lib.mydigis")()
 
+local selected_digi = {}
+local selected_base = {}
 local DigiTable = Gui.base.Rect:extend()
 
 function DigiTable:new(t)
@@ -27,14 +28,20 @@ function State:enter()
   }
   local getDigi = function(box,line,row)
     local dg, txt = MyDigis:getDigi(box,line,row)
-    if not dg then
-      popup.text = txt
-      ObjHandler:addObj(popup,11)
-      return false
-    end
-    return dg
+    if dg then
+      return dg
+    end   
+    popup.text = txt
+    ObjHandler:addObj(popup,11)
+    return false
 end
-  
+  -- oooooo
+  local txt_w = 40
+  local txt_h = txt_w
+  local btn_w = 80
+  local btn_h = txt_h
+  local btn_pad = 20
+  -- ooo
   btn_add_dg = Gui.button.Rect {
     x = (GS.width / 2) - (80*4 +20*3)/2,
     y = GS.height - 100,
@@ -76,13 +83,14 @@ end
       }
     },
     action = {
-      released = function(self) 
+      released = function(self)
         local result, txt = MyDigis:getDigi(btn_box.input, btn_line.input, btn_row.input) 
+        
         if not result then
           popup.text = txt
           return ObjHandler:addObj(popup,10)
         end
-        StateManager:switch("digi_editor", {box=btn_box.input, line=btn_line.input, row=btn_row.input})
+        StateManager:switch("digi_editor", {box=btn_box.input, line=btn_line.input, row=btn_row.input, digi=result})
       end,
     },
   }
@@ -165,7 +173,19 @@ end
   }
   
   btn_search.action.released = function(self) 
-    digi = getDigi(btn_box.input, btn_line.input, btn_row.input)
+    local d = getDigi(btn_box.input, btn_line.input, btn_row.input)
+    if d then
+      selected_digi = d
+      selected_base = DigiCatalog:getDigi(selected_digi.key)
+      txt_digi_name.text = selected_base.name
+      txt_digi_hp2.text = selected_digi.hp
+      txt_digi_lvl2.text = selected_digi.level
+      ObjHandler:addObj(txt_digi_name)
+      ObjHandler:addObj(txt_digi_hp1)
+      ObjHandler:addObj(txt_digi_hp2)
+      ObjHandler:addObj(txt_digi_lvl1)
+      ObjHandler:addObj(txt_digi_lvl2)
+    end
   end
 
   
@@ -180,6 +200,34 @@ end
   ObjHandler:addObj(btn_menu)
   local dg_table = DigiTable()
   ObjHandler:addObj(dg_table)
+
+  txt_digi_name = Gui.base.Text{
+    x=(GS.width)/2 - (btn_w*3)/2,
+    y=(GS.height)/2 - (btn_h *3+btn_pad*2) - (btn_h+btn_pad), 
+    w=btn_w*3, h=txt_h,
+  }
+  txt_digi_hp1 = Gui.base.Text{
+    x=(GS.width)/2 - ((btn_w+txt_w)*3+btn_pad*2)/2, 
+    y=(GS.height)/2 - (btn_h *3+btn_pad*2), 
+    w=txt_w, h=txt_h,
+    text = "HP"
+  }
+  txt_digi_hp2 = Gui.base.Text{
+    x=(GS.width)/2 - ((btn_w+txt_w)*3+btn_pad*2)/2 + txt_w,
+    y=(GS.height)/2 - (btn_h *3+btn_pad*2), 
+    w=txt_w, h=txt_h
+  }
+  txt_digi_lvl1 = Gui.base.Text{
+    x = (GS.width)/2 - ((btn_w+txt_w)*3+btn_pad*2)/2 + (btn_w+txt_w), 
+    y=(GS.height)/2 - (btn_h *3+btn_pad*2), 
+    w=txt_w, h=txt_h,
+    text = "LVL"
+  }
+  txt_digi_lvl2 = Gui.base.Text{
+    x=(GS.width)/2 - ((btn_w+txt_w)*3+btn_pad*2)/2 + (btn_w+txt_w) +txt_w,
+    y=(GS.height)/2 - (btn_h *3+btn_pad*2), 
+    w=txt_w, h=txt_h,
+  }
 end
 
 function State:update(dt)

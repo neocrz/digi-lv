@@ -7,7 +7,7 @@ Ser = require "lib.ser"
 Utils = require "lib.utils"
 CONF = {}
 DigiCatalog = require("lib.digi_catalog")({ digis = require("data.d_catalog") })
-
+MyDigis = require("lib.mydigis")()
 GS={}
 CONF.OS = love.system.getOS()
 
