@@ -17,14 +17,12 @@ end
 
 function love.update(dt)
   StateManager:update(dt)
-  Lovebird:update()
-  FPS = love.timer.getFPS( )
+  -- Lovebird:update()
+  -- FPS = love.timer.getFPS( )
 end
 
 function love.draw()
   StateManager:draw()
-  love.graphics.print('Memory actually used (in kB): ' .. collectgarbage('count'), 10, 30)
-  love.graphics.print('FPS: ' .. FPS, 10, 40)
 end
 
 function love.touchmoved(id, x, y, dx, dy, pressure)
