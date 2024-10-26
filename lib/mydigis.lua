@@ -3,8 +3,8 @@ local _ = Classic:extend() -- new: generate rows and lines
 function _:new(boxes)
   self.boxes = boxes or nil
   if not self.boxes then
-    local saved_boxes, _l = love.filesystem.load("digi_boxes.lua")()
-    self.boxes = saved_boxes
+    local saved_boxes, _l = love.filesystem.load("digi_boxes.lua")
+    if saved_boxes then self.boxes = saved_boxes() end
   end
   self.selected = nil
   if not self.boxes then
