@@ -64,7 +64,7 @@ function State:enter()
   }
 
 gen_digi_list()
-  search = Gui.button.text {
+  search = Gui.button.Text {
     OH_ref = ObjHandler,
     x = (GS.width / 2) - (100 / 2),
     y = GS.height - 100 - 60,

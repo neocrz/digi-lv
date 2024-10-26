@@ -110,6 +110,22 @@ end
           popup.text = txt
           ObjHandler:addObj(popup,10)
         end
+        -- add rmObj from the search bubtton
+        ObjHandler:rmObj(txt_digi_name)
+        ObjHandler:rmObj(txt_digi_hp1)
+        ObjHandler:rmObj(txt_digi_hp2)
+        ObjHandler:rmObj(txt_digi_lvl1)
+        ObjHandler:rmObj(txt_digi_lvl2)
+        ObjHandler:rmObj(txt_digi_at1)
+        ObjHandler:rmObj(txt_digi_at2)
+        ObjHandler:rmObj(txt_digi_sp_at1)
+        ObjHandler:rmObj(txt_digi_sp_at2)
+        ObjHandler:rmObj(txt_digi_de1)
+        ObjHandler:rmObj(txt_digi_de2)
+        ObjHandler:rmObj(txt_digi_sp_de1)
+        ObjHandler:rmObj(txt_digi_sp_de2)
+        ObjHandler:rmObj(txt_digi_np1)
+        ObjHandler:rmObj(txt_digi_np2)
       end,
     },
   }
@@ -126,7 +142,8 @@ end
       released = function(self) StateManager:switch("menu") end,
     },
   }
-  btn_box = Gui.button.text {
+  btn_box = Gui.button.Text {
+    OH_ref=ObjHandler,
     x = (GS.width / 2) - (80*4 +20*3)/2,
     y = GS.height - 100 - 60,
     w = 80, h = 40,
@@ -138,7 +155,8 @@ end
     keep_input=true
   }
 
-  btn_line = Gui.button.text {
+  btn_line = Gui.button.Text {
+    OH_ref = ObjHandler,
     x = (GS.width / 2) - (80*4 +20*3)/2 + (80+20),
     y = GS.height - 100 - 60,
     w = 80, h = 40,
@@ -149,7 +167,8 @@ end
     },
     keep_input=true
   }
-  btn_row = Gui.button.text {
+  btn_row = Gui.button.Text {
+    OH_ref = ObjHandler,
     x = (GS.width / 2) - (80*4 +20*3)/2 + (80+20)*2,
     y = GS.height - 100 - 60,
     w = 80, h = 40,
@@ -180,11 +199,31 @@ end
       txt_digi_name.text = selected_base.name
       txt_digi_hp2.text = selected_digi.hp
       txt_digi_lvl2.text = selected_digi.level
+      txt_digi_at2.text = selected_digi.attack
+      txt_digi_sp_at2.text = selected_digi["sp.attack"]
+      txt_digi_de2.text = selected_digi.defense
+      txt_digi_sp_de2.text = selected_digi["sp.defense"]
+      txt_digi_np2.text = string.format("%.2f", (
+        (selected_digi.attack/selected_digi.level)-selected_base.attack +
+        (selected_digi["sp.attack"]/selected_digi.level)-selected_base["sp.attack"]+
+        (selected_digi.defense/selected_digi.level)-selected_base.defense+
+        (selected_digi["sp.defense"]/selected_digi.level)-selected_base["sp.defense"]
+      )/4)
       ObjHandler:addObj(txt_digi_name)
       ObjHandler:addObj(txt_digi_hp1)
       ObjHandler:addObj(txt_digi_hp2)
       ObjHandler:addObj(txt_digi_lvl1)
       ObjHandler:addObj(txt_digi_lvl2)
+      ObjHandler:addObj(txt_digi_at1)
+      ObjHandler:addObj(txt_digi_at2)
+      ObjHandler:addObj(txt_digi_sp_at1)
+      ObjHandler:addObj(txt_digi_sp_at2)
+      ObjHandler:addObj(txt_digi_de1)
+      ObjHandler:addObj(txt_digi_de2)
+      ObjHandler:addObj(txt_digi_sp_de1)
+      ObjHandler:addObj(txt_digi_sp_de2)
+      ObjHandler:addObj(txt_digi_np1)
+      ObjHandler:addObj(txt_digi_np2)
     end
   end
 
@@ -215,18 +254,73 @@ end
   txt_digi_hp2 = Gui.base.Text{
     x=(GS.width)/2 - ((btn_w+txt_w)*3+btn_pad*2)/2 + txt_w,
     y=(GS.height)/2 - (btn_h *3+btn_pad*2), 
-    w=txt_w, h=txt_h
+    w=btn_w, h=btn_h
   }
   txt_digi_lvl1 = Gui.base.Text{
-    x = (GS.width)/2 - ((btn_w+txt_w)*3+btn_pad*2)/2 + (btn_w+txt_w), 
+    x = (GS.width)/2 - ((btn_w+txt_w)*3+btn_pad*2)/2 + (btn_w+txt_w+btn_pad), 
     y=(GS.height)/2 - (btn_h *3+btn_pad*2), 
     w=txt_w, h=txt_h,
     text = "LVL"
   }
   txt_digi_lvl2 = Gui.base.Text{
-    x=(GS.width)/2 - ((btn_w+txt_w)*3+btn_pad*2)/2 + (btn_w+txt_w) +txt_w,
+    x=(GS.width)/2 - ((btn_w+txt_w)*3+btn_pad*2)/2 + (btn_w+txt_w+btn_pad) +txt_w,
+    y=(GS.height)/2 - (btn_h *3+btn_pad*2), 
+    w=btn_w, h=btn_h,
+  }
+  txt_digi_at1 = Gui.base.Text{
+    x = (GS.width)/2 - ((btn_w+txt_w)*3+btn_pad*2)/2 + (btn_w+txt_w+btn_pad)*2, 
     y=(GS.height)/2 - (btn_h *3+btn_pad*2), 
     w=txt_w, h=txt_h,
+    text = "AT"
+  }
+  txt_digi_at2 = Gui.base.Text{
+    x=(GS.width)/2 - ((btn_w+txt_w)*3+btn_pad*2)/2 + (btn_w+txt_w+btn_pad)*2 +txt_w,
+    y=(GS.height)/2 - (btn_h *3+btn_pad*2), 
+    w=btn_w, h=btn_h,
+  }
+  txt_digi_sp_at1 = Gui.base.Text{
+    x = (GS.width)/2 - ((btn_w+txt_w)*3+btn_pad*2)/2, 
+    y=(GS.height)/2 - (btn_h*3+btn_pad*2)+(btn_h+btn_pad), 
+    w=txt_w, h=txt_h,
+    text = "Sp.At"
+  }
+  txt_digi_sp_at2 = Gui.base.Text{
+    x=(GS.width)/2 - ((btn_w+txt_w)*3+btn_pad*2)/2+txt_w,
+    y=(GS.height)/2 - (btn_h*3+btn_pad*2)+(btn_h+btn_pad), 
+    w=btn_w, h=btn_h,
+  }
+  txt_digi_de1 = Gui.base.Text{
+    x = (GS.width)/2 - ((btn_w+txt_w)*3+btn_pad*2)/2+(btn_w+txt_w+btn_pad), 
+    y=(GS.height)/2 - (btn_h*3+btn_pad*2)+(btn_h+btn_pad), 
+    w=txt_w, h=txt_h,
+    text = "DE"
+  }
+  txt_digi_de2 = Gui.base.Text{
+    x=(GS.width)/2 - ((btn_w+txt_w)*3+btn_pad*2)/2+(btn_w+txt_w+btn_pad)+txt_w,
+    y=(GS.height)/2 - (btn_h*3+btn_pad*2)+(btn_h+btn_pad), 
+    w=btn_w, h=btn_h,
+  }
+  txt_digi_sp_de1 = Gui.base.Text{
+    x = (GS.width)/2 - ((btn_w+txt_w)*3+btn_pad*2)/2+(btn_w+txt_w+btn_pad)*2, 
+    y=(GS.height)/2 - (btn_h*3+btn_pad*2)+(btn_h+btn_pad), 
+    w=txt_w, h=txt_h,
+    text = "Sp.De"
+  }
+  txt_digi_sp_de2 = Gui.base.Text{
+    x=(GS.width)/2 - ((btn_w+txt_w)*3+btn_pad*2)/2+(btn_w+txt_w+btn_pad)*2+txt_w,
+    y=(GS.height)/2 - (btn_h*3+btn_pad*2)+(btn_h+btn_pad), 
+    w=btn_w, h=btn_h,
+  }
+  txt_digi_np1 = Gui.base.Text{
+    x = (GS.width)/2 - ((btn_w+txt_w)*3+btn_pad*2)/2+(btn_w+txt_w+btn_pad)*0, 
+    y=(GS.height)/2 - (btn_h*3+btn_pad*2)+(btn_h+btn_pad)*2, 
+    w=txt_w, h=txt_h,
+    text = "NP"
+  }
+  txt_digi_np2 = Gui.base.Text{
+    x=(GS.width)/2 - ((btn_w+txt_w)*3+btn_pad*2)/2+(btn_w+txt_w+btn_pad)*0+txt_w,
+    y=(GS.height)/2 - (btn_h*3+btn_pad*2)+(btn_h+btn_pad)*2, 
+    w=btn_w, h=btn_h,
   }
 end
 

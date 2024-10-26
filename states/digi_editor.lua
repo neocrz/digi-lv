@@ -36,6 +36,32 @@ local steps = {}
 -- steps.key gets the key of the digimon selected by user
 function steps.key ()
   local digi_list = nil
+  if digi_info and digi_info.key then
+    local d = DigiCatalog:getDigi(digi_info.key)
+    txt_digi_name = Gui.button.Rect{
+      x=(GS.width)/2 - (80*3)/2,
+      y=(GS.height)/2 - (40 *3+20*2) - (40+20), 
+      w=80*3, h=40,
+      inactive = {
+        text = { text = d.name }
+      },
+      action = {released = function(self) 
+        -- save it's key in the digi_info
+        digi_info.key = d.key 
+        -- creates a popup that removes this step and goes to the next one
+        popup.text = "'".. d.key .. "' Selected"
+        popup.action = function (self)
+          self.OH_ref:rmObj(self)
+          self.OH_ref:rmObj(digi_list)
+          self.OH_ref:rmObj(btn_search)
+          self.OH_ref:rmObj(txt_digi_name)
+          steps.status()
+        end
+        ObjHandler:addObj(popup, 10)
+      end
+    },}
+    ObjHandler:addObj(txt_digi_name)
+  end
   -- Generates a list of alternatives to choose from
   local gen_list = function (s)
     -- can receive a search string to delimit digi list
@@ -61,6 +87,7 @@ function steps.key ()
               self.OH_ref:rmObj(self)
               self.OH_ref:rmObj(digi_list)
               self.OH_ref:rmObj(btn_search)
+              self.OH_ref:rmObj(txt_digi_name)
               steps.status()
             end
             ObjHandler:addObj(popup, 10)
@@ -97,7 +124,7 @@ function steps.key ()
   -- initial list with all digis
   gen_list()
   -- a btn to match digis with specific string in its name
-  btn_search = Gui.button.text {
+  btn_search = Gui.button.Text {
     OH_ref = ObjHandler,
     x = (GS.width / 2) - (100*3+20*2)/2 + (100+20),
     y = GS.height - 100 - 60,
@@ -142,7 +169,8 @@ function steps.status()
     w=txt_w, h=txt_h,
     text = "HP"
   }
-  local btn_hp = Gui.button.text {
+  local btn_hp = Gui.button.Text {
+    OH_ref = ObjHandler,
     x = (GS.width)/2 - ((btn_w+txt_w)*2+btn_pad)/2 + txt_h,
     y=(GS.height)/2 - (btn_h *3+btn_pad*2), 
     w = btn_w, h = btn_h,
@@ -161,14 +189,15 @@ function steps.status()
     w=txt_w, h=txt_h,
     text = "LVL"
   }
-  local btn_lvl = Gui.button.text {
+  local btn_lvl = Gui.button.Text {
+    OH_ref = ObjHandler,
     x = (GS.width)/2 - ((btn_w+txt_w)*2+btn_pad)/2  + (btn_w+txt_w+btn_pad) + txt_h,
     y=(GS.height)/2 - (btn_h *3+btn_pad*2), 
     w = btn_w, h = btn_h,
-    input = digi_info.lvl or 0,
+    input = digi_info.level or 0,
     inactive = {
       text = {
-        text = digi_info.lvl or 0,
+        text = digi_info.level or 0,
       }
     },
     keep_input=true
@@ -181,7 +210,8 @@ function steps.status()
     w=txt_w, h=txt_h,
     text = "AT"
   }
-  local btn_at = Gui.button.text {
+  local btn_at = Gui.button.Text {
+    OH_ref = ObjHandler,
     x = (GS.width)/2 - ((btn_w+txt_w)*2+btn_pad)/2 + txt_h,
     y=(GS.height)/2 - (btn_h *3+btn_pad*2)+(btn_h+btn_pad), 
     w = btn_w, h = btn_h,
@@ -200,7 +230,8 @@ function steps.status()
     w=txt_w, h=txt_h,
     text = "Sp.At"
   }
-  local btn_sp_at = Gui.button.text {
+  local btn_sp_at = Gui.button.Text {
+    OH_ref = ObjHandler,
     x = (GS.width)/2 - ((btn_w+txt_w)*2+btn_pad)/2  + (btn_w+txt_w+btn_pad) + txt_h,
     y=(GS.height)/2 - (btn_h *3+btn_pad*2)+(btn_h+btn_pad), 
     w = btn_w, h = btn_h,
@@ -220,7 +251,8 @@ function steps.status()
     w=txt_w, h=txt_h,
     text = "DE"
   }
-  local btn_de = Gui.button.text {
+  local btn_de = Gui.button.Text {
+    OH_ref=ObjHandler,
     x = (GS.width)/2 - ((btn_w+txt_w)*2+btn_pad)/2 + txt_h,
     y=(GS.height)/2 - (btn_h *3+btn_pad*2)+(btn_h+btn_pad)*2, 
     w = btn_w, h = btn_h,
@@ -239,7 +271,8 @@ function steps.status()
     w=txt_w, h=txt_h,
     text = "Sp.De"
   }
-  local btn_sp_de = Gui.button.text {
+  local btn_sp_de = Gui.button.Text {
+    OH_ref = ObjHandler,
     x = (GS.width)/2 - ((btn_w+txt_w)*2+btn_pad)/2  + (btn_w+txt_w+btn_pad) + txt_h,
     y=(GS.height)/2 - (btn_h *3+btn_pad*2)+(btn_h+btn_pad)*2, 
     w = btn_w, h = btn_h,
