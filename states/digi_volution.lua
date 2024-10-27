@@ -125,16 +125,44 @@ end
 
 -- Show digivolutions
 function Stage.evos(digi)
+  local btn_menu = btn_menu
   ObjHandler:addObj(btn_menu)
   ObjHandler:addObj(btn_route)
-  local _t = { w = 250, h = 40 }
+  local _t = {h = 20}
+
+  if CONF.mobile then
+    _t.w = GS.width - 40 *2
+    _t.h_cond=(GS.height/8)*3
+  else
+    _t.w=250
+    _t.h_cond=(GS.height/8)*2
+  end
+
   local txt_digi = Gui.base.Text {
     text = digi.name,
     w = _t.w, h = _t.h,
     x = (GS.width / 2) - _t.w / 2,
-    y = (GS.height / 4)
+    y = (GS.height/2) - (_t.h*2+_t.h_cond)/2
   }
+  -- the evolution select to show the conditions
+  local txt_digi2 = Gui.base.Text {
+    text = "",
+    w = _t.w, h = _t.h,
+    x = (GS.width / 2) - _t.w / 2,
+    y = (GS.height/2) - (_t.h*2+_t.h_cond)/2 + _t.h
+  }
+  -- digivolution conditions
+  local txt_cond = Gui.base.Text{
+    text = "",
+    w = _t.w, h=_t.h_cond,
+    x = (GS.width / 2) - _t.w / 2,
+    y = (GS.height/2) - (_t.h*2+_t.h_cond)/2 + _t.h*2
+  }
+
+
   ObjHandler:addObj(txt_digi)
+  ObjHandler:addObj(txt_digi2)
+  ObjHandler:addObj(txt_cond)
 end
 
 -- add digivolution route
@@ -272,6 +300,11 @@ function Stage.add_cond(digi_from, digi_to)
     h=_t.h,
     text=""
   }
+  if DigiCatalog.dv_to[digi_from] then
+    if DigiCatalog.dv_to[digi_from][digi_to] then
+      txt_cond.text=DigiCatalog.dv_to[digi_from][digi_to]
+    end
+  end
   if CONF.mobile then
 
   else
@@ -281,7 +314,7 @@ function Stage.add_cond(digi_from, digi_to)
   local btn_add_cond = Gui.button.Text{
     OH_ref = ObjHandler,
     x = (GS.width / 2) - (100*3+20*2)/2 + (100 + 20)*2,
-    y = GS.height - 100,
+    y = GS.height - 100 - (40+20),
     w = 100, h = 40,
     inactive = {
       text = {
@@ -295,6 +328,68 @@ function Stage.add_cond(digi_from, digi_to)
       end
     }
   }
+  local btn_clr_cond = Gui.button.Rect{
+    OH_ref = ObjHandler,
+    x = (GS.width / 2) - (100*3+20*2)/2 + (100 + 20)*1,
+    y = GS.height - 100 - (40+20),
+    w = 100, h = 40,
+    inactive = {
+      text = {
+        text = "clr.cond"
+      }
+    },
+    action = {
+      released = function(self)
+        txt_cond.text=""
+      end
+    }
+  }
+  local btn_save_cond = Gui.button.Rect{
+    OH_ref = ObjHandler,
+    x = (GS.width / 2) - (100*3+20*2)/2 + (100 + 20)*2,
+    y = GS.height - 100,
+    w = 100, h = 40,
+    inactive = {
+      text = {
+        text = "SAVE"
+      }
+    },
+    action = {
+      released = function(self)
+        DigiCatalog:addDv(digi_from, digi_to, txt_cond.text)
+        popup.text = "Digivolution added"
+        popup.action = function (self)
+          self.OH_ref:rmObj(self)
+          self.OH_ref:clearLayer()
+          StateManager:switch("menu")
+        end
+        ObjHandler:addObj(popup, 10)
+      end
+    }
+  }
+  local btn_rm_dv = Gui.button.Rect{
+    OH_ref = ObjHandler,
+    x = (GS.width / 2) - (100*3+20*2)/2 + (100 + 20)*0,
+    y = GS.height - 100 - (40+20),
+    w = 100, h = 40,
+    inactive = {
+      text = {
+        text = "rm.dv"
+      }
+    },
+    action = {
+      released = function(self)
+        DigiCatalog:rmDv(digi_from, digi_to)
+        popup.text = "Digivolution removed"
+        popup.action = function (self)
+          self.OH_ref:rmObj(self)
+          self.OH_ref:clearLayer()
+          StateManager:switch("menu")
+        end
+        ObjHandler:addObj(popup, 10)
+      end
+    }
+  }
   ObjHandler:addObj(txt_title)
   ObjHandler:addObj(txt_from)
   ObjHandler:addObj(txt_to)
@@ -304,6 +399,9 @@ function Stage.add_cond(digi_from, digi_to)
   ObjHandler:addObj(btn_return)
   ObjHandler:addObj(txt_cond)
   ObjHandler:addObj(btn_add_cond)
+  ObjHandler:addObj(btn_clr_cond)
+  ObjHandler:addObj(btn_save_cond)
+  ObjHandler:addObj(btn_rm_dv)
   _t = nil
 end
 
