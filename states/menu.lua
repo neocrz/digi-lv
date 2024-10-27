@@ -24,7 +24,7 @@ function State:enter()
       }
     },
     action = {
-      released = function(self) StateManager:switch("evo_tree") end,
+      released = function(self) StateManager:switch("digi_volution") end,
     },
   }
 
