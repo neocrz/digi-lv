@@ -212,57 +212,96 @@ function Stage.digi_route()
 end
 -- add conditions to evolution
 function Stage.add_cond(digi_from, digi_to)
-  ObjHandler:addObj(btn_menu)
-  ObjHandler:addObj(btn_return)
   local _t = nil
-  _t = {w=150,h=40, s=20}
+  _t = {w=150,h=30}
   local txt_title = Gui.base.Text{
     text="Conditions",
-    x=(GS.width)/2 - (_t.w*3+_t.s*2)/2+(_t.w+_t.s),
+    x=(GS.width)/2 - _t.w/2,
     y=_t.h,
     w=_t.w, h=_t.h,
   }
-  ObjHandler:addObj(txt_title)
+  
   _t = {w=250,h=20, s=20}
   local txt_from = Gui.base.Text{
     text="FROM",
-    x=(GS.width)/2 - (_t.w*2+_t.s*1)/2,
     y=txt_title.y+txt_title.h+_t.s,
     w=_t.w, h=_t.h,
   }
+
+  local txt_from2 = Gui.base.Text{
+    w=_t.w, h=_t.h,
+    text=digi_from.name,
+  }
+
   local txt_to = Gui.base.Text{
     text="TO",
-    x=(GS.width)/2 - (_t.w*2+_t.s*1)/2+(_t.w+_t.s),
-    y=txt_title.y+txt_title.h+_t.s,
     w=_t.w, h=_t.h,
+  }
+  local txt_to2 = Gui.base.Text{
+    w=_t.w, h=_t.h,
+    text=digi_to.name,
+  }
+
+  if CONF.mobile then
+    txt_from.x=(GS.width)/2 - (txt_from.w)/2
+    txt_from2.x=txt_from.x
+    txt_from2.y=txt_from.y+txt_from.h
+    txt_to.x=txt_from2.x
+    txt_to.y=txt_from2.y+txt_from2.h+_t.s
+    txt_to2.x=txt_to.x
+    txt_to2.y=txt_to.y+txt_to.h
+    _t.w=GS.width-(40*2)
+  else
+    txt_from.x=(GS.width)/2 - (_t.w*2+_t.s*1)/2
+    txt_from2.x=txt_from.x
+    txt_from2.y=txt_from.y+txt_from.h
+    txt_to.x=(GS.width)/2 - (_t.w*2+_t.s*1)/2+(_t.w+_t.s)
+    txt_to.y=txt_from.y
+    txt_to2.x=txt_to.x
+    txt_to2.y=txt_to.y+txt_to.h
+    _t.w=GS.width/2
+  end
+  _t.h=GS.height/3
+  _t.y=txt_to2.y+txt_to2.h+_t.s
+  local txt_cond = Gui.base.Text{
+    x=(GS.width)/2 - _t.w/2,
+    w=_t.w,
+    y=_t.y,
+    h=_t.h,
+    text=""
+  }
+  if CONF.mobile then
+
+  else
+    
+  end
+  
+  local btn_add_cond = Gui.button.Text{
+    OH_ref = ObjHandler,
+    x = (GS.width / 2) - (100*3+20*2)/2 + (100 + 20)*2,
+    y = GS.height - 100,
+    w = 100, h = 40,
+    inactive = {
+      text = {
+        text = "add.cond"
+      }
+    },
+    action = {
+      input = function(self)
+        txt_cond.text=txt_cond.text..self.input.."\n"
+        self.input = ""
+      end
+    }
   }
   ObjHandler:addObj(txt_title)
   ObjHandler:addObj(txt_from)
   ObjHandler:addObj(txt_to)
-  local txt_from2 = Gui.base.Text{
-    x=txt_from.x,
-    y=txt_from.y+txt_from.h,
-    w=_t.w, h=_t.h,
-    text=digi_from.name,
-  }
-  local txt_to2 = Gui.base.Text{
-    x=txt_to.x,
-    y=txt_to.y+txt_to.h,
-    w=_t.w, h=_t.h,
-    text=digi_from.name,
-  }
   ObjHandler:addObj(txt_from2)
   ObjHandler:addObj(txt_to2)
-  _t = {border=20, h=GS.height/2}
-  _t.w=GS.width/2
-  local txt_conditions = Gui.base.Text{
-    x=(GS.width)/2 - _t.w/2,
-    w=_t.w,
-    y=txt_from2.y+40,
-    h=_t.h,
-    text=""
-  }
-  ObjHandler:addObj(txt_conditions)
+  ObjHandler:addObj(btn_menu)
+  ObjHandler:addObj(btn_return)
+  ObjHandler:addObj(txt_cond)
+  ObjHandler:addObj(btn_add_cond)
   _t = nil
 end
 
