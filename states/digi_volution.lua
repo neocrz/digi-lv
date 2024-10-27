@@ -251,6 +251,7 @@ function Stage.add_cond(digi_from, digi_to)
     txt_to2.x=txt_to.x
     txt_to2.y=txt_to.y+txt_to.h
     _t.w=GS.width-(40*2)
+    _t.h=GS.height/2
   else
     txt_from.x=(GS.width)/2 - (_t.w*2+_t.s*1)/2
     txt_from2.x=txt_from.x
@@ -260,8 +261,9 @@ function Stage.add_cond(digi_from, digi_to)
     txt_to2.x=txt_to.x
     txt_to2.y=txt_to.y+txt_to.h
     _t.w=GS.width/2
+    _t.h=(GS.height/7)*3
   end
-  _t.h=GS.height/3
+  
   _t.y=txt_to2.y+txt_to2.h+_t.s
   local txt_cond = Gui.base.Text{
     x=(GS.width)/2 - _t.w/2,
