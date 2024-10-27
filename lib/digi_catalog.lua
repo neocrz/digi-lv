@@ -1,23 +1,27 @@
---[[
-Usage
--- Unstructured Digis
-local DigiCatalog = require "lib.digi_catalog"()
-local digis = require "data.digimons"
-DigiCatalog:addDigis(digis)
-DigiCatalog:exportDigis()
-
--- Structured Digis
-
-local digis = require "data.digimons"
-local DigiCatalog = require "lib.digi_catalog"({digis=digis})
-
---]]
-
 
 local _ = Classic:extend() -- base status and evolutions.
-function _:new(t)
-  local t = t or {}
-  self.digis = t.digis or {}
+function _:new()
+  self.savefile = "digi_catalog.lua"
+  local dg_cat, _msg = love.filesystem.load(self.savefile)
+  if dg_cat then
+    dg_cat=dg_cat()
+    self.digis = dg_cat.digis 
+    self.dv_to = dg_cat.dv_to
+  else
+    dg_cat = require("data."..self.savefile)
+    self.digis = dg_cat.digis
+    self.dv_to = dg_cat.dv_to
+  end
+  self:save()
+end
+
+function _:save()
+  local dg_cat = {
+    digis=self.digis,
+    dv_to=self.dv_to,
+  }
+  str = Ser(dg_cat)
+  love.filesystem.write(self.savefile, str)
 end
 
 function _:addDigi(t)
@@ -35,37 +39,11 @@ function _:addDigi(t)
   d.defense = t.Defense or t.defense or nil
   d["sp.defense"] = t["Sp.Defense"] or t["sp.defense"] or nil
   d.spirit = t.Spirit or t.spirit or nil
-  -- digivolve_to ={["agumon"]={"level >= 4","friendship > 2"}
-  d.digivolve_to = t.digivolve_to or {}
 
   self.digis[d.key] = d
 end
 
-function _:addDigis(digis)
-  local digis = digis or {}
-  for digikey, digi in pairs(digis) do
-    local digi = digi
-    digi.key = digi.key or digikey
-    self:addDigi(digi)
-  end
-end
 
-function _:exportDigis(filename, internal)
-  local filename = filename or "d_catalog.lua"
-  local str = Ser(self.digis)
-  if internal then
-    local file = io.open(filename, "w")
-
-    if file then
-      file:write(str) -- Write the string to the file
-      file:close()    -- Close the file
-    else
-      print("Error: Unable to open file for writing.")
-    end
-  else
-    love.filesystem.write(filename, str)
-  end
-end
 
 function _:getDigi(key)
   return self.digis[key]
