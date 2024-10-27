@@ -8,7 +8,7 @@ function _:new()
     self.digis = dg_cat.digis 
     self.dv_to = dg_cat.dv_to
   else
-    dg_cat = require("data."..self.savefile)
+    dg_cat = require("data.digi_catalog")
     self.digis = dg_cat.digis
     self.dv_to = dg_cat.dv_to
   end
