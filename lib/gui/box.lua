@@ -160,14 +160,14 @@ function _.Box:rmObj(obj)
 end
 
 function _.Box:to_draw()
-  love.graphics.setScissor(self.x - 1, self.y - 1, self.w + 3, self.h + 3)
+  love.graphics.setScissor(self.x - 2, self.y - 2, self.w + 4, self.h + 4)
 
   for k, obj in pairs(self.objsD) do
     if obj.draw then obj:to_draw() end
   end
   love.graphics.setScissor()
   if self.mode then
-    love.graphics.rectangle(self.mode, self.x - 1, self.y - 1, self.w + 3, self.h + 3)
+    love.graphics.rectangle(self.mode, self.x - 2, self.y - 2, self.w + 4, self.h + 4)
   end
 end
 

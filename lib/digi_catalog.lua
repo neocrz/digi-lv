@@ -11,7 +11,7 @@ function _:new()
     dg_cat=dg_cat()
     self.digis = dg_cat.digis 
     self.dv_to = dg_cat.dv_to
-    self.dv_from = dg_cat.dv_to
+    self.dv_from = dg_cat.dv_from
   else
     dg_cat = require("data.digi_catalog")
     self.digis = dg_cat.digis
@@ -24,7 +24,6 @@ end
 function _:save()
   local dg_cat = {
     digis=self.digis,
-    
     dv_to=self.dv_to,
     dv_from=self.dv_from,
   }
@@ -53,6 +52,7 @@ function _:addDigi(t)
 end
 
 function _:addDv(from, to, conditions)
+ 
   if not self.dv_to[from] then
     self.dv_to[from] = {}
   end
@@ -63,6 +63,7 @@ function _:addDv(from, to, conditions)
   end
   self.dv_from[to][from]=conditions
   self:save()
+  
   return true
 end
 
