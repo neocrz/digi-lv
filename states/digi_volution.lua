@@ -191,9 +191,15 @@ function Stage.evos(digi)
     y = (GS.height / 2) - (_t.h * 2 + _t.h_cond) / 2 + _t.h + 2
   }
   if CONF.mobile then
+    txt_from.x=txt_cond.x
+    txt_from.y=txt_digi.y - 20 -txt_from.h -_t.from_list.h
+    _t.from_list.x=txt_from.x+2
+    _t.from_list.y=txt_from.y+txt_from.h+2
     
-  else
-    
+    txt_to.x=txt_cond.x
+    txt_to.y=txt_cond.y+txt_cond.h+20
+    _t.to_list.x=txt_to.x+2
+    _t.to_list.y=txt_to.y+txt_to.h+2
   end
 
   local function genDigis(tb, pos)
