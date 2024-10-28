@@ -1,29 +1,34 @@
 local _ = Classic:extend() -- new: generate rows and lines
 
-function _:new(boxes)
-  self.boxes = boxes or nil
-  if not self.boxes then
-    local saved_boxes, _l = love.filesystem.load("digi_boxes.lua")
-    if saved_boxes then self.boxes = saved_boxes() end
-  end
+function _:new()
+  self.savefile = "digi_boxes.lua"
+  local dg_boxes, _msg = love.filesystem.load(self.savefile)
   self.selected = nil
-  if not self.boxes then
-    self.boxes = {}
-    for i = 1, 12 do
-      table.insert(self.boxes, i, {})
-      for j = 1, 6 do
-        table.insert(self.boxes[i], j, {})
-        for k = 1, 10 do
-          table.insert(self.boxes[i][j], k, {})
-        end
-      end
-    end
+  
+  if dg_boxes then
+    self.boxes=dg_boxes()
+  else
+    self:genBoxes()
   end
 end
 
-function _:saveBoxes()
-  str = Ser(self.boxes)
-  love.filesystem.write("digi_boxes.lua", str)
+function _:genBoxes()
+  self.boxes = {}
+  for i = 1, 12 do
+    self.boxes[i]={}
+    for j = 1, 6 do
+      self.boxes[i][j]={}
+      for k = 1, 10 do
+        self.boxes[i][j][k]={}
+      end
+    end
+  end
+  self:save()
+end
+
+function _:save()
+  local str = Ser(self.boxes)
+  love.filesystem.write(self.savefile, str)
 end
 
 function _:addDigi(box, line, row, digi)
@@ -44,7 +49,7 @@ function _:addDigi(box, line, row, digi)
   -- d.line = line
   -- d.row = row
   self.boxes[box][line][row] = d
-  self:saveBoxes()
+  self:save()
 end
 
 function _:getDigi(box, line, row)
@@ -85,7 +90,7 @@ function _:rmDigi(box, line, row)
   end
 
   self.boxes[box][line][row] = nil
-  self:saveBoxes()
+  self:save()
   return true, "success"
 end
 
